@@ -1,27 +1,31 @@
 
-import java.awt.Component;
-import javax.swing.JFrame;
-
 public class Main {
 
     public static void main(String args[]) {
-        JFrame window = new JFrame("Work Time");
+        WTWindow window = new WTWindow("Work Time", 600, 300, true);
         WTPanel panel = new WTPanel();
         WTLabel text = new WTLabel("Work Time");
-        WTButton button = new WTButton("Start Work");
-
-        window.setSize(600, 300);
-        window.setLocationRelativeTo(null);
-        button.setFocusPainted(false);
-        text.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         panel.add(text);
-        panel.add(button);
+
+        WTButton endOtherBreakBtn = new WTButton("Start Break");
+        WTButton startOtherBreakBtn = new WTButton("End Break");
+        WTButton endToiletBtn = new WTButton("End Toilet Break");
+        WTButton startToiletBtn = new WTButton("Start Toilet Break");
+        WTButton endLunchBtn = new WTButton("End Lunch");
+        WTButton startLunchBtn = new WTButton("Start Lunch");
+        WTButton endWorkBtn = new WTButton("End Work");
+        WTButton startWorkBtn = new WTButton("Start Work");
+
+        panel.add(startWorkBtn);
+        panel.add(endWorkBtn);
+        panel.add(startLunchBtn);
+        panel.add(endLunchBtn);
+        panel.add(startToiletBtn);
+        panel.add(endToiletBtn);
+        panel.add(startOtherBreakBtn);
+        panel.add(endOtherBreakBtn);
 
         window.add(panel);
-
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
         window.setVisible(true);
     }
 }
