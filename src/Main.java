@@ -1,27 +1,29 @@
 
-import javax.swing.JButton;
+import java.awt.Component;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class Main {
 
     public static void main(String args[]) {
         JFrame window = new JFrame("Work Time");
-        JPanel panel = new JPanel();
+        WTPanel panel = new WTPanel();
         JLabel text = new JLabel("Work Time");
-        JButton button = new JButton();
+        WTButton button = new WTButton("Start Work");
 
-        window.setSize(300, 300);
+        window.setSize(600, 300);
         window.setLocationRelativeTo(null);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setFocusPainted(false);
+        text.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        panel.add(button);
         panel.add(text);
+        panel.add(button);
 
         window.add(panel);
 
-        window.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setResizable(false);
         window.setVisible(true);
     }
 }
