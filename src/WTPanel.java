@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 
 public class WTPanel extends JPanel {
 
-    WTPanel() {
+    public WTPanel() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 }
