@@ -1,12 +1,12 @@
 
 import java.awt.Component;
-import javax.swing.JButton;
+import javax.swing.JLabel;
 
-public class WTButton extends JButton {
+public class WTLabel extends JLabel {
 
-    public WTButton(String text) {
+    public WTLabel(String text) {
         this.setText(text);
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
-
     }
+
 }
