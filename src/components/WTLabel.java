@@ -7,9 +7,9 @@ import javax.swing.JLabel;
 
 public class WTLabel extends JLabel {
 
-    public WTLabel(String text) {
+    public WTLabel(String text, boolean heading) {
         this.setText(text);
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.setFont(new Font("Serif", Font.BOLD, 20));
+        this.setFont(new Font("Serif", (heading) ? Font.BOLD : Font.PLAIN, 20));
     }
 }

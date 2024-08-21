@@ -16,21 +16,23 @@ import components.WTWindow;
 public class LoginPage implements ActionListener {
 
     WTWindow loginWindow = new WTWindow(
-            "Work Time Login", 600, 300, true);
+            "Work Time Login", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true);
     WTPanel loginPanel = new WTPanel();
 
-    WTButton loginBtn = new WTButton("Login");
-    WTLabel loginHeader = new WTLabel("Please login to continue");
+    WTLabel loginHeading = new WTLabel("Login to continue", true);
 
-    WTLabel usernameLabel = new WTLabel("Username:");
+    WTLabel usernameLabel = new WTLabel("Username:", false);
     WTTextField usernameField = new WTTextField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
-    WTLabel passwordLabel = new WTLabel("Password:");
+    WTLabel passwordLabel = new WTLabel("Password:", false);
     WTPasswordField passwordField = new WTPasswordField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
 
     WTSpacer spacer = new WTSpacer(new Dimension(Constants.SMALL_Y_SPACER_WIDTH, Constants.SMALL_Y_SPACER_HEIGHT));
 
+    WTButton loginBtn = new WTButton("Login");
+    WTButton toRegisterButton = new WTButton("Register a new account");
+
     public LoginPage() {
-        loginPanel.add(loginHeader);
+        loginPanel.add(loginHeading);
 
         loginPanel.add(usernameLabel);
         loginPanel.add(usernameField);
@@ -41,6 +43,8 @@ public class LoginPage implements ActionListener {
 
         loginPanel.add(loginBtn);
         loginBtn.addActionListener(this);
+        loginPanel.add(toRegisterButton);
+        toRegisterButton.addActionListener(this);
 
         loginWindow.add(loginPanel);
         loginWindow.setVisible(true);
@@ -53,6 +57,9 @@ public class LoginPage implements ActionListener {
             System.out.println(usernameField.getText());
             System.out.println(passwordField.getPassword());
             new UserView();
+        } else if (e.getSource() == toRegisterButton) {
+            loginWindow.dispose();
+            new RegisterPage();
         }
     }
 }
