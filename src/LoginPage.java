@@ -1,4 +1,4 @@
-
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,11 +11,25 @@ public class LoginPage implements ActionListener {
     WTButton loginBtn = new WTButton("Login");
     WTLabel loginHeader = new WTLabel("Please login to continue");
 
+    WTLabel usernameLabel = new WTLabel("Username:");
+    WTTextField usernameField = new WTTextField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
+    WTLabel passwordLabel = new WTLabel("Password:");
+    WTPasswordField passwordField = new WTPasswordField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
+
+    WTSpacer spacer = new WTSpacer(new Dimension(Constants.SMALL_Y_SPACER_WIDTH, Constants.SMALL_Y_SPACER_HEIGHT));
+
     LoginPage() {
         loginPanel.add(loginHeader);
 
-        loginBtn.addActionListener(this);
+        loginPanel.add(usernameLabel);
+        loginPanel.add(usernameField);
+        loginPanel.add(passwordLabel);
+        loginPanel.add(passwordField);
+
+        loginPanel.add(spacer);
+
         loginPanel.add(loginBtn);
+        loginBtn.addActionListener(this);
 
         loginWindow.add(loginPanel);
         loginWindow.setVisible(true);
@@ -24,6 +38,9 @@ public class LoginPage implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginBtn) {
+
+            System.out.println(usernameField.getText());
+            System.out.println(passwordField.getPassword());
             new UserView();
         }
     }

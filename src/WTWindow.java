@@ -12,5 +12,4 @@ public class WTWindow extends JFrame {
         this.setResizable(false);
         this.setDefaultCloseOperation(WTWindow.EXIT_ON_CLOSE);
     }
-
 }
