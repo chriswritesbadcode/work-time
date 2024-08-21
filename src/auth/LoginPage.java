@@ -17,6 +17,7 @@ public class LoginPage implements ActionListener {
 
     WTWindow loginWindow = new WTWindow(
             "Work Time Login", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true);
+
     WTPanel loginPanel = new WTPanel();
 
     WTLabel loginHeading = new WTLabel("Login to continue", true);

@@ -10,6 +10,6 @@ public class WTLabel extends JLabel {
     public WTLabel(String text, boolean heading) {
         this.setText(text);
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.setFont(new Font("Serif", (heading) ? Font.BOLD : Font.PLAIN, 20));
+        this.setFont(new Font("Verdana", (heading) ? Font.BOLD : Font.PLAIN, 20));
     }
 }

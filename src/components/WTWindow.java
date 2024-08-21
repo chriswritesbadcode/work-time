@@ -1,5 +1,6 @@
 package components;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 public class WTWindow extends JFrame {
@@ -12,5 +13,7 @@ public class WTWindow extends JFrame {
         }
         this.setResizable(false);
         this.setDefaultCloseOperation(WTWindow.EXIT_ON_CLOSE);
+        ImageIcon icon = new ImageIcon("src/resources/favico.png");
+        this.setIconImage(icon.getImage());
     }
 }
