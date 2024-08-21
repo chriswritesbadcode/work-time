@@ -1,3 +1,4 @@
+import auth.LoginPage;
 
 public class Main {
 

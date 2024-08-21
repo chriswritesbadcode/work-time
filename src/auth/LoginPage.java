@@ -1,6 +1,17 @@
+package auth;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import consts.Constants;
+import components.WTButton;
+import components.WTLabel;
+import components.WTPanel;
+import components.WTPasswordField;
+import components.WTSpacer;
+import components.WTTextField;
+import components.WTWindow;
 
 public class LoginPage implements ActionListener {
 
@@ -18,7 +29,7 @@ public class LoginPage implements ActionListener {
 
     WTSpacer spacer = new WTSpacer(new Dimension(Constants.SMALL_Y_SPACER_WIDTH, Constants.SMALL_Y_SPACER_HEIGHT));
 
-    LoginPage() {
+    public LoginPage() {
         loginPanel.add(loginHeader);
 
         loginPanel.add(usernameLabel);

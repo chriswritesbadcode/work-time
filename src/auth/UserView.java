@@ -1,3 +1,9 @@
+package auth;
+
+import components.WTButton;
+import components.WTLabel;
+import components.WTPanel;
+import components.WTWindow;
 
 public class UserView {
 
