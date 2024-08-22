@@ -15,6 +15,7 @@ import components.WTSpacer;
 import components.WTTextField;
 import components.WTWindow;
 import validate.InputValidator;
+import validate.PasswordHashing;
 
 public class LoginPage implements ActionListener {
 
@@ -81,7 +82,10 @@ public class LoginPage implements ActionListener {
                         errorLabel.setText("Username does not exist!");
                     } else {
                         while (rs.next()) {
-                            if (username.equals(rs.getString(2)) && password.equals(rs.getString(3))) {
+                            String storedHash = rs.getString(3);
+                            boolean authenticated = PasswordHashing.authenticateUser(storedHash, password);
+
+                            if (username.equals(rs.getString(2)) && authenticated) {
                                 new UserView();
                             } else {
                                 errorLabel.setText("Incorrect credentials");

@@ -18,6 +18,7 @@ import components.WTTextField;
 import components.WTWindow;
 import consts.Constants;
 import validate.InputValidator;
+import validate.PasswordHashing;
 
 public class RegisterPage implements ActionListener {
     WTWindow registerWindow = new WTWindow("Work Time Register", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true);
@@ -88,13 +89,18 @@ public class RegisterPage implements ActionListener {
                     if (usernameSearchSet.isBeforeFirst()) {
                         errorLabel.setText("Username exists!");
                     } else {
+                        byte[] salt = PasswordHashing.generateSalt();
+                        String hashedPassword = PasswordHashing.hashPassword(password, salt);
+
                         PreparedStatement pstmt = con
-                                .prepareStatement("INSERT INTO users(full_name, username, password) VALUES(?, ?, ?)");
+                                .prepareStatement("INSERT INTO users(full_name, username, password) VALUES(?,?, ?)");
                         pstmt.setString(1, fullName);
                         pstmt.setString(2, userName);
-                        pstmt.setString(3, password);
+                        pstmt.setString(3, hashedPassword);
                         pstmt.execute();
 
+                        registerWindow.dispose();
+                        new UserView();
                     }
                     con.close();
                 } catch (Exception err) {
