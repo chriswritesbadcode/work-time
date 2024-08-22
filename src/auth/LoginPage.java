@@ -87,6 +87,28 @@ public class LoginPage implements ActionListener {
 
                             if (username.equals(rs.getString(2)) && authenticated) {
                                 new UserView();
+                                String[] session = SessionManager.createSession();
+
+                                int userId = rs.getInt(1);
+                                String token = session[0];
+                                Timestamp expirationDate = new Timestamp(Long.parseLong(session[1]));
+
+                                PreparedStatement delFromSessionPSTMT = con
+                                        .prepareStatement("DELETE FROM sessions WHERE user_id = ?");
+                                delFromSessionPSTMT.setInt(1, userId);
+                                delFromSessionPSTMT.execute();
+
+                                PreparedStatement sessionPSTMT = con.prepareStatement(
+                                        "INSERT INTO sessions(user_id, token, expiration_date) VALUES(?, ?, ?)");
+
+                                sessionPSTMT.setInt(1, userId);
+                                sessionPSTMT.setString(2, token);
+                                sessionPSTMT.setTimestamp(3, expirationDate);
+                                sessionPSTMT.execute();
+
+                                System.out.println("CREATED NEW SESSION. USERID: " + userId + "| TOKEN: " + token
+                                        + "| EXPDATE: " + expirationDate);
+
                             } else {
                                 errorLabel.setText("Incorrect credentials");
                             }
