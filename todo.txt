@@ -1,0 +1,10 @@
+add regex 
+hash passwords on register
+check hash input and compare to db hashed password on login
+setup registering
+store logged in user, and display info on userview
+
+setup buttons to save time of start and end
+
+create user role, not NULL, default agent vs admin
+if user role is admin, show admin section instead of userview

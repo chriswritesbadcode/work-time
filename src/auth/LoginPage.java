@@ -14,6 +14,7 @@ import components.WTPasswordField;
 import components.WTSpacer;
 import components.WTTextField;
 import components.WTWindow;
+import validate.InputValidator;
 
 public class LoginPage implements ActionListener {
 
@@ -64,27 +65,26 @@ public class LoginPage implements ActionListener {
             String username = usernameField.getText().trim();
             String password = new String(passwordField.getPassword());
 
-            if (username.length() == 0 || password.length() == 0) {
-                errorLabel.setText("Username and Password are required!");
+            if (!InputValidator.validateUserName(username) || !InputValidator.validatePasword(password)) {
+                errorLabel.setText("Invalid format for credentials!");
             } else {
-                System.out.println("TRYING TO CONNECT");
                 try {
                     Connection con = DriverManager.getConnection(
                             "jdbc:mysql://" + System.getenv("WTDB_HOST") + "/" + System.getenv("WTDB_NAME"),
                             System.getenv("WTDB_USER"), System.getenv("WTDB_PASSWORD"));
-                    Statement stmt = con.createStatement();
-                    ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE username = " + "'" + username + "'");
+                    PreparedStatement pstmt = con
+                            .prepareStatement("SELECT * FROM users WHERE username = ?");
+
+                    pstmt.setString(1, username);
+                    ResultSet rs = pstmt.executeQuery();
                     if (!rs.isBeforeFirst()) {
                         errorLabel.setText("Username does not exist!");
-                        System.out.println("Username does not exist!");
                     } else {
                         while (rs.next()) {
                             if (username.equals(rs.getString(2)) && password.equals(rs.getString(3))) {
-                                System.out.println("Correct credentials");
                                 new UserView();
                             } else {
                                 errorLabel.setText("Incorrect credentials");
-                                System.out.println("INCORRECT CREDS");
                             }
                         }
                     }
