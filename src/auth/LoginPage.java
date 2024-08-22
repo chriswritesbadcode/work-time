@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.sql.*;
+
 import consts.Constants;
 import components.WTButton;
 import components.WTLabel;
@@ -32,6 +34,8 @@ public class LoginPage implements ActionListener {
     WTButton loginBtn = new WTButton("Login");
     WTButton toRegisterButton = new WTButton("Register a new account");
 
+    WTLabel errorLabel = new WTLabel("", false);
+
     public LoginPage() {
         loginPanel.add(loginHeading);
 
@@ -47,17 +51,47 @@ public class LoginPage implements ActionListener {
         loginPanel.add(toRegisterButton);
         toRegisterButton.addActionListener(this);
 
+        loginPanel.add(errorLabel);
+
         loginWindow.add(loginPanel);
         loginWindow.setVisible(true);
+
+        try {
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + System.getenv("WTDB_HOST") + "/" +
+                            System.getenv("WTDB_NAME"),
+                    System.getenv("WTDB_USER"),
+                    System.getenv("WTDB_PASSWORD"));
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM users");
+            while (rs.next()) {
+                System.out.println(rs.getInt(1) + " " + rs.getString(2));
+            }
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginBtn) {
 
-            System.out.println(usernameField.getText());
-            System.out.println(passwordField.getPassword());
-            new UserView();
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword());
+
+            if (username.length() == 0 || password.length() == 0) {
+                errorLabel.setText("Username and Password are required!");
+            } else {
+                if ("Chris".equals(username) && "123".equals(password)) {
+                    new UserView();
+
+                } else {
+                    errorLabel.setText("Incorrect credentials");
+                }
+            }
+
         } else if (e.getSource() == toRegisterButton) {
             loginWindow.dispose();
             new RegisterPage();
