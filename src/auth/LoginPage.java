@@ -22,11 +22,11 @@ public class LoginPage implements ActionListener {
 
     WTPanel loginPanel = new WTPanel();
 
-    WTLabel loginHeading = new WTLabel("Login to continue", true);
+    WTLabel loginHeading = new WTLabel("Login to continue", true, "lg", "b");
 
-    WTLabel usernameLabel = new WTLabel("Username:", false);
+    WTLabel usernameLabel = new WTLabel("Username:", false, "sm", "b");
     WTTextField usernameField = new WTTextField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
-    WTLabel passwordLabel = new WTLabel("Password:", false);
+    WTLabel passwordLabel = new WTLabel("Password:", false, "sm", "b");
     WTPasswordField passwordField = new WTPasswordField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
 
     WTSpacer spacer = new WTSpacer(new Dimension(Constants.SMALL_Y_SPACER_WIDTH, Constants.SMALL_Y_SPACER_HEIGHT));
@@ -34,7 +34,7 @@ public class LoginPage implements ActionListener {
     WTButton loginBtn = new WTButton("Login");
     WTButton toRegisterButton = new WTButton("Register a new account");
 
-    WTLabel errorLabel = new WTLabel("", false);
+    WTLabel errorLabel = new WTLabel("", false, "md", "r");
 
     public LoginPage() {
         loginPanel.add(loginHeading);

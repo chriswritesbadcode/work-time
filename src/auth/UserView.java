@@ -10,7 +10,7 @@ public class UserView {
     UserView() {
         WTWindow userWindow = new WTWindow("Work Time", 600, 300, true);
         WTPanel panel = new WTPanel();
-        WTLabel userViewHeading = new WTLabel("Work Time", true);
+        WTLabel userViewHeading = new WTLabel("Work Time", true, "lg", "b");
         panel.add(userViewHeading);
 
         WTButton endOtherBreakBtn = new WTButton("Start Break");
