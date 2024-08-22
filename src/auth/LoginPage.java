@@ -55,23 +55,6 @@ public class LoginPage implements ActionListener {
 
         loginWindow.add(loginPanel);
         loginWindow.setVisible(true);
-
-        try {
-            Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://" + System.getenv("WTDB_HOST") + "/" +
-                            System.getenv("WTDB_NAME"),
-                    System.getenv("WTDB_USER"),
-                    System.getenv("WTDB_PASSWORD"));
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM users");
-            while (rs.next()) {
-                System.out.println(rs.getInt(1) + " " + rs.getString(2));
-            }
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
     }
 
     @Override
@@ -84,12 +67,33 @@ public class LoginPage implements ActionListener {
             if (username.length() == 0 || password.length() == 0) {
                 errorLabel.setText("Username and Password are required!");
             } else {
-                if ("Chris".equals(username) && "123".equals(password)) {
-                    new UserView();
+                System.out.println("TRYING TO CONNECT");
+                try {
+                    Connection con = DriverManager.getConnection(
+                            "jdbc:mysql://" + System.getenv("WTDB_HOST") + "/" + System.getenv("WTDB_NAME"),
+                            System.getenv("WTDB_USER"), System.getenv("WTDB_PASSWORD"));
+                    Statement stmt = con.createStatement();
+                    ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE username = " + "'" + username + "'");
+                    if (!rs.isBeforeFirst()) {
+                        errorLabel.setText("Username does not exist!");
+                        System.out.println("Username does not exist!");
+                    } else {
+                        while (rs.next()) {
+                            if (username.equals(rs.getString(2)) && password.equals(rs.getString(3))) {
+                                System.out.println("Correct credentials");
+                                new UserView();
+                            } else {
+                                errorLabel.setText("Incorrect credentials");
+                                System.out.println("INCORRECT CREDS");
+                            }
+                        }
+                    }
 
-                } else {
-                    errorLabel.setText("Incorrect credentials");
+                    con.close();
+                } catch (Exception err) {
+                    System.out.println(err);
                 }
+
             }
 
         } else if (e.getSource() == toRegisterButton) {
