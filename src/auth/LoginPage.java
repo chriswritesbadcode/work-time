@@ -70,9 +70,8 @@ public class LoginPage implements ActionListener {
                 errorLabel.setText("Invalid format for credentials!");
             } else {
                 try {
-                    Connection con = DriverManager.getConnection(
-                            "jdbc:mysql://" + System.getenv("WTDB_HOST") + "/" + System.getenv("WTDB_NAME"),
-                            System.getenv("WTDB_USER"), System.getenv("WTDB_PASSWORD"));
+                    Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
+                            Constants.DB_PASSWORD);
                     PreparedStatement pstmt = con
                             .prepareStatement("SELECT * FROM users WHERE username = ?");
 
@@ -83,15 +82,15 @@ public class LoginPage implements ActionListener {
                     } else {
                         while (rs.next()) {
                             String storedHash = rs.getString(3);
+                            int userId = rs.getInt(1);
                             boolean authenticated = PasswordHashing.authenticateUser(storedHash, password);
 
                             if (username.equals(rs.getString(2)) && authenticated) {
                                 new UserView();
                                 String[] session = SessionManager.createSession();
 
-                                int userId = rs.getInt(1);
                                 String token = session[0];
-                                Timestamp expirationDate = new Timestamp(Long.parseLong(session[1]));
+                                long expirationDate = Long.parseLong(session[1]);
 
                                 PreparedStatement delFromSessionPSTMT = con
                                         .prepareStatement("DELETE FROM sessions WHERE user_id = ?");
@@ -103,11 +102,8 @@ public class LoginPage implements ActionListener {
 
                                 sessionPSTMT.setInt(1, userId);
                                 sessionPSTMT.setString(2, token);
-                                sessionPSTMT.setTimestamp(3, expirationDate);
+                                sessionPSTMT.setLong(3, expirationDate);
                                 sessionPSTMT.execute();
-
-                                System.out.println("CREATED NEW SESSION. USERID: " + userId + "| TOKEN: " + token
-                                        + "| EXPDATE: " + expirationDate);
 
                             } else {
                                 errorLabel.setText("Incorrect credentials");

@@ -7,7 +7,7 @@ import components.WTWindow;
 
 public class UserView {
 
-    UserView() {
+    public UserView() {
         WTWindow userWindow = new WTWindow("Work Time", 600, 300, true);
         WTPanel panel = new WTPanel();
         WTLabel userViewHeading = new WTLabel("Work Time", true, "lg", "b");

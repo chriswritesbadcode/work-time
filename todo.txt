@@ -1,3 +1,11 @@
+ON RUN APP CHECK IF SESSION FILE EXISTS
+    IF YES VALIDATE SESSION TOKEN AND EXP DATE
+        IF VALID, SHOW USERVIEW WITH USER DETAILS
+        IF NO SHOW LOGIN 
+
+ON REGISTER CREATE SESSION FILE AND SAVE TOKEN IN DB
+    THEN DIRECTLY OPEN MENU
+
 store logged in user, and display info on userview
 
 setup buttons to save time of start and end

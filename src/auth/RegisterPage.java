@@ -79,9 +79,8 @@ public class RegisterPage implements ActionListener {
                 errorLabel.setText(invalidMsg + "Password, 4 digits only!");
             } else {
                 try {
-                    Connection con = DriverManager.getConnection(
-                            "jdbc:mysql://" + System.getenv("WTDB_HOST") + "/" + System.getenv("WTDB_NAME"),
-                            System.getenv("WTDB_USER"), System.getenv("WTDB_PASSWORD"));
+                    Connection con = DriverManager.getConnection(Constants.DB_HOST,
+                            Constants.DB_USER, Constants.DB_PASSWORD);
 
                     Statement doesUsernameExistStmt = con.createStatement();
                     ResultSet usernameSearchSet = doesUsernameExistStmt

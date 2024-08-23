@@ -6,12 +6,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Base64;
 import java.util.Date;
 
+import consts.Constants;
+
 public class SessionManager {
-    private static final String SESSION_FILE = "session.dat";
-    private static final int SESSION_VALIDITY_DAYS = 2;
 
     private static String generateSessionToken() {
         SecureRandom random = new SecureRandom();
@@ -23,9 +27,9 @@ public class SessionManager {
 
     public static String[] createSession() throws IOException {
         String token = generateSessionToken();
-        long expirationTime = new Date().getTime() + (SESSION_VALIDITY_DAYS * 24 * 60 * 60 * 1000L);
+        long expirationTime = new Date().getTime() + (Constants.SESSION_VALIDITY_DAYS * 24 * 60 * 60 * 1000L);
 
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(SESSION_FILE))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(Constants.SESSION_FILE))) {
             writer.write(token + '\n');
             writer.write(Long.toString(expirationTime));
         }
@@ -34,23 +38,47 @@ public class SessionManager {
     }
 
     public static boolean validateSession() throws IOException {
-        if (!Files.exists(Paths.get(SESSION_FILE))) {
+        if (!Files.exists(Paths.get(Constants.SESSION_FILE))) {
             return false;
         }
 
-        try (BufferedReader reader = Files.newBufferedReader(Paths.get(SESSION_FILE))) {
-            String token = reader.readLine();
-            long expirationTime = Long.parseLong(reader.readLine());
+        try (BufferedReader reader = Files.newBufferedReader(Paths.get(Constants.SESSION_FILE))) {
+            String fileToken = reader.readLine();
+            String fileId = reader.readLine();
+            long fileExpTime = Long.parseLong(reader.readLine());
 
-            if (new Date().getTime() > expirationTime) {
+            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
+                    Constants.DB_PASSWORD);
+            PreparedStatement sessionPSTMT = con.prepareStatement("SELECT * FROM sessions WHERE user_id = ?");
+            sessionPSTMT.setString(1, fileId);
+            ResultSet sessionData = sessionPSTMT.executeQuery();
+
+            if (!sessionData.isBeforeFirst()) {
+                return false;
+            }
+
+            sessionData.next();
+
+            int dbUserId = sessionData.getInt(2);
+            String dbToken = sessionData.getString(3);
+            long dbExpTime = sessionData.getLong(4);
+
+            if (!Integer.toString(dbUserId).equals(fileId) || !dbToken.equals(fileToken) || dbExpTime != fileExpTime) {
+                return false;
+            }
+
+            if (new Date().getTime() > fileExpTime) {
                 return false;
             }
 
             return true;
+        } catch (Exception err) {
+            System.out.println("ERROR: " + err);
+            return false;
         }
     }
 
     public static void invalidateSession() throws IOException {
-        Files.deleteIfExists(Paths.get(SESSION_FILE));
+        Files.deleteIfExists(Paths.get(Constants.SESSION_FILE));
     }
 }
