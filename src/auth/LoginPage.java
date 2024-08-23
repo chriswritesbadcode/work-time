@@ -24,11 +24,11 @@ public class LoginPage implements ActionListener {
 
     WTPanel loginPanel = new WTPanel();
 
-    WTLabel loginHeading = new WTLabel("Login to continue", true, "lg", "b");
+    WTLabel loginHeading = new WTLabel("Login to continue", true, "lg", "b", 'c');
 
-    WTLabel usernameLabel = new WTLabel("Username:", false, "sm", "b");
+    WTLabel usernameLabel = new WTLabel("Username:", false, "sm", "b", 'c');
     WTTextField usernameField = new WTTextField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
-    WTLabel passwordLabel = new WTLabel("Password:", false, "sm", "b");
+    WTLabel passwordLabel = new WTLabel("Password:", false, "sm", "b", 'c');
     WTPasswordField passwordField = new WTPasswordField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
 
     WTSpacer spacer = new WTSpacer(new Dimension(Constants.SMALL_Y_SPACER_WIDTH, Constants.SMALL_Y_SPACER_HEIGHT));
@@ -36,7 +36,7 @@ public class LoginPage implements ActionListener {
     WTButton loginBtn = new WTButton("Login");
     WTButton toRegisterButton = new WTButton("Register a new account");
 
-    WTLabel errorLabel = new WTLabel("", false, "md", "r");
+    WTLabel errorLabel = new WTLabel("", false, "md", "r", 'c');
 
     public LoginPage() {
         loginPanel.add(loginHeading);
@@ -87,7 +87,7 @@ public class LoginPage implements ActionListener {
 
                             if (username.equals(rs.getString(2)) && authenticated) {
                                 new UserView();
-                                String[] session = SessionManager.createSession();
+                                String[] session = SessionManager.createSession(rs.getInt(1));
 
                                 String token = session[0];
                                 long expirationDate = Long.parseLong(session[1]);
@@ -113,7 +113,7 @@ public class LoginPage implements ActionListener {
 
                     con.close();
                 } catch (Exception err) {
-                    System.out.println(err);
+                    System.out.println("ERROR IN LOGIN PAGE: " + err);
                 }
 
             }

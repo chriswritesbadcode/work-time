@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 public class WTLabel extends JLabel {
     private Color fgColor;
 
-    public WTLabel(String text, boolean heading, String size, String color) {
+    public WTLabel(String text, boolean heading, String size, String color, Character alignment) {
 
         switch (color) {
             case "r":
@@ -31,5 +31,10 @@ public class WTLabel extends JLabel {
         this.setFont(new Font("Verdana", (heading) ? Font.BOLD : Font.PLAIN,
                 (size.equals("sm")) ? 10 : (size.equals("md")) ? 15 : (size.equals("lg")) ? 20 : 50));
         this.setForeground(fgColor);
+
+        this.setHorizontalAlignment(
+                alignment.equals('r') ? JLabel.RIGHT : alignment.equals('l') ? JLabel.LEFT : JLabel.CENTER);
+        this.setAlignmentX(alignment.equals('r') ? Component.RIGHT_ALIGNMENT
+                : alignment.equals('l') ? Component.LEFT_ALIGNMENT : Component.CENTER_ALIGNMENT);
     }
 }

@@ -20,6 +20,12 @@ public class AppState {
         return instance;
     }
 
+    public static AppState resetInstance() {
+        instance = new AppState();
+
+        return instance;
+    }
+
     public String getUserName() {
         return userName;
     }

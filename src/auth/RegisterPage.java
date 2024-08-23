@@ -24,13 +24,13 @@ public class RegisterPage implements ActionListener {
     WTWindow registerWindow = new WTWindow("Work Time Register", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true);
     WTPanel registerPanel = new WTPanel();
 
-    WTLabel registerHeading = new WTLabel("Register a new account", true, "lg", "b");
+    WTLabel registerHeading = new WTLabel("Register a new account", true, "lg", "b", 'c');
 
-    WTLabel fullNameLabel = new WTLabel("Name:", false, "sm", "b");
+    WTLabel fullNameLabel = new WTLabel("Name:", false, "sm", "b", 'c');
     WTTextField fullNameField = new WTTextField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
-    WTLabel userNameLabel = new WTLabel("Username:", false, "sm", "b");
+    WTLabel userNameLabel = new WTLabel("Username:", false, "sm", "b", 'c');
     WTTextField userNameField = new WTTextField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
-    WTLabel passwordLabel = new WTLabel("Password:", false, "sm", "b");
+    WTLabel passwordLabel = new WTLabel("Password:", false, "sm", "b", 'c');
     WTPasswordField passwordField = new WTPasswordField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
 
     WTSpacer spacer = new WTSpacer(new Dimension(Constants.SMALL_Y_SPACER_WIDTH, Constants.SMALL_Y_SPACER_HEIGHT));
@@ -38,7 +38,7 @@ public class RegisterPage implements ActionListener {
     WTButton registerButton = new WTButton("Register");
     WTButton toLoginButton = new WTButton("Login to an existing account");
 
-    WTLabel errorLabel = new WTLabel("", false, "sm", "r");
+    WTLabel errorLabel = new WTLabel("", false, "sm", "r", 'c');
 
     public RegisterPage() {
         registerPanel.add(registerHeading);
@@ -103,7 +103,7 @@ public class RegisterPage implements ActionListener {
                     }
                     con.close();
                 } catch (Exception err) {
-                    System.out.println(err);
+                    System.out.println("ERROR IN REGISTER PAGE: " + err);
                 }
             }
         } else if (e.getSource() == toLoginButton) {

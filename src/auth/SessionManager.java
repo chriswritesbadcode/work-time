@@ -26,12 +26,13 @@ public class SessionManager {
         return Base64.getEncoder().encodeToString(tokenBytes);
     }
 
-    public static String[] createSession() throws IOException {
+    public static String[] createSession(int id) throws IOException {
         String token = generateSessionToken();
         long expirationTime = new Date().getTime() + (Constants.SESSION_VALIDITY_DAYS * 24 * 60 * 60 * 1000L);
 
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(Constants.SESSION_FILE))) {
             writer.write(token + '\n');
+            writer.write(Integer.toString(id) + '\n');
             writer.write(Long.toString(expirationTime));
         }
 
@@ -85,7 +86,7 @@ public class SessionManager {
             con.close();
             return true;
         } catch (Exception err) {
-            System.out.println("ERROR: " + err);
+            System.out.println("ERROR IN SESSION MANAGER: " + err);
             return false;
         }
     }

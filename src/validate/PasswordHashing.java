@@ -38,7 +38,7 @@ public class PasswordHashing {
         try {
             return hashPassword(inputPassword, salt).equals(storedHash);
         } catch (Exception err) {
-            System.out.println("Error hashing input password: " + err);
+            System.out.println("ERROR IN PASSWORD HASHING: " + err);
             return false;
         }
     }
