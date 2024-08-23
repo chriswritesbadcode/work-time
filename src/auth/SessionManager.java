@@ -14,6 +14,7 @@ import java.util.Base64;
 import java.util.Date;
 
 import consts.Constants;
+import state.AppState;
 
 public class SessionManager {
 
@@ -38,6 +39,8 @@ public class SessionManager {
     }
 
     public static boolean validateSession() throws IOException {
+        AppState state = AppState.getInstance();
+
         if (!Files.exists(Paths.get(Constants.SESSION_FILE))) {
             return false;
         }
@@ -71,6 +74,15 @@ public class SessionManager {
                 return false;
             }
 
+            PreparedStatement userPSTMT = con.prepareStatement("SELECT * FROM users WHERE id = ?");
+            userPSTMT.setInt(1, dbUserId);
+            ResultSet userSet = userPSTMT.executeQuery();
+            userSet.next();
+            state.setUserId(userSet.getInt(1));
+            state.setUserName(userSet.getString(2));
+            state.setFullName(userSet.getString(4));
+
+            con.close();
             return true;
         } catch (Exception err) {
             System.out.println("ERROR: " + err);

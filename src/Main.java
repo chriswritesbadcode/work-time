@@ -6,6 +6,7 @@ import auth.SessionManager;
 public class Main {
 
     public static void main(String args[]) {
+
         try {
             if (SessionManager.validateSession()) {
                 new UserView();
