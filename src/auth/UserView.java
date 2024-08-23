@@ -5,6 +5,10 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Date;
+
+import javax.swing.SwingUtilities;
 
 import components.WTButton;
 import components.WTLabel;
@@ -21,9 +25,9 @@ public class UserView implements ActionListener {
     WTPanel panel = new WTPanel();
     WTLabel userViewHeading = new WTLabel("Work Time", true, "lg", "b", 'c');
 
-    WTLabel fullNameLabel = new WTLabel(state.getFullName(), false, "sm", "b", 'r');
-    WTLabel userNameLabel = new WTLabel(state.getUserName(), false, "sm", "b", 'r');
-    WTLabel userIdLabel = new WTLabel(state.getUserId(), false, "sm", "b", 'r');
+    WTLabel fullNameLabel = new WTLabel(state.getFullName(), false, "sm", "b", 'c');
+    WTLabel userNameLabel = new WTLabel(state.getUserName(), false, "sm", "b", 'c');
+    WTLabel userIdLabel = new WTLabel(Integer.toString(state.getUserId()), false, "sm", "b", 'c');
 
     WTButton endOtherBreakBtn = new WTButton("Start Break");
     WTButton startOtherBreakBtn = new WTButton("End Break");
@@ -38,14 +42,36 @@ public class UserView implements ActionListener {
 
     public UserView() {
 
+        try {
+            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
+                    Constants.DB_PASSWORD);
+            PreparedStatement isWorkingPSTMT = con
+                    .prepareStatement("SELECT * FROM work_times WHERE end IS NULL AND user_id = ?");
+            isWorkingPSTMT.setInt(1, state.getUserId());
+            ResultSet workingData = isWorkingPSTMT.executeQuery();
+            if (workingData.isBeforeFirst()) {
+                state.setIsWorking(true);
+            } else {
+                state.setIsWorking(false);
+            }
+
+        } catch (Exception err) {
+            System.out.println("ERROR IN USERVIEW BEGINNING: " + err);
+        }
+
         panel.add(userViewHeading);
 
         panel.add(fullNameLabel);
         panel.add(userNameLabel);
         panel.add(userIdLabel);
 
-        panel.add(startWorkBtn);
-        panel.add(endWorkBtn);
+        if (state.getIsWorking()) {
+            System.out.println("IS WORKING ");
+            panel.add(endWorkBtn);
+        } else {
+            System.out.println("NOT  WORKING ");
+            panel.add(startWorkBtn);
+        }
         panel.add(startLunchBtn);
         panel.add(endLunchBtn);
         panel.add(startToiletBtn);
@@ -71,23 +97,90 @@ public class UserView implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == logoutBtn) {
+        try {
 
-            try {
-                Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
-                        Constants.DB_PASSWORD);
+            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
+                    Constants.DB_PASSWORD);
+
+            if (e.getSource() == logoutBtn) {
                 PreparedStatement logoutPSTMT = con.prepareStatement("DELETE FROM sessions WHERE user_id = ?");
-                logoutPSTMT.setString(1, state.getUserId());
+                logoutPSTMT.setInt(1, state.getUserId());
                 logoutPSTMT.execute();
 
                 SessionManager.invalidateSession();
 
-            } catch (Exception err) {
-                System.out.println("ERROR IN USER VIEW: " + err);
+                AppState.resetInstance();
+                userWindow.dispose();
+                new LoginPage();
+            } else if (e.getSource() == startWorkBtn) {
+                PreparedStatement startWorkPSTMT = con
+                        .prepareStatement("INSERT INTO work_times(user_id, start) VALUES(?, ?)");
+                startWorkPSTMT.setInt(1, state.getUserId());
+                startWorkPSTMT.setLong(2, new Date().getTime());
+                startWorkPSTMT.execute();
+
+                state.setIsWorking(true);
+                System.out.println("STARTED WORKING: " + new Date());
+
+            } else if (e.getSource() == endWorkBtn) {
+                PreparedStatement endWorkPSTMT = con
+                        .prepareStatement("UPDATE work_times SET end = ? WHERE end IS NULL AND user_id = ?");
+                endWorkPSTMT.setLong(1, new Date().getTime());
+                endWorkPSTMT.setInt(2, state.getUserId());
+                endWorkPSTMT.execute();
+
+                System.out.println("STOPPED WORKING: " + new Date());
+                state.setIsWorking(false);
+
+            } else if (e.getSource() == startLunchBtn) {
+                System.out.println("UNIMPLEMENTED");
+            } else if (e.getSource() == endLunchBtn) {
+                System.out.println("UNIMPLEMENTED");
+            } else if (e.getSource() == startToiletBtn) {
+                System.out.println("UNIMPLEMENTED");
+            } else if (e.getSource() == endToiletBtn) {
+                System.out.println("UNIMPLEMENTED");
+            } else if (e.getSource() == startOtherBreakBtn) {
+                System.out.println("UNIMPLEMENTED");
+            } else if (e.getSource() == endOtherBreakBtn) {
+                System.out.println("UNIMPLEMENTED");
             }
-            AppState.resetInstance();
-            userWindow.dispose();
-            new LoginPage();
+
+            updateUI();
+
+            con.close();
+        } catch (Exception err) {
+            System.out.println("ERROR IN USER VIEW ACTION PERFORMED: " + err);
         }
+    }
+
+    private void updateUI() {
+        SwingUtilities.invokeLater(() -> {
+            panel.removeAll();
+            panel.add(userViewHeading);
+
+            panel.add(fullNameLabel);
+            panel.add(userNameLabel);
+            panel.add(userIdLabel);
+
+            if (state.getIsWorking()) {
+                System.out.println("IS WORKING ");
+                panel.add(endWorkBtn);
+            } else {
+                System.out.println("NOT  WORKING ");
+                panel.add(startWorkBtn);
+            }
+            panel.add(startLunchBtn);
+            panel.add(endLunchBtn);
+            panel.add(startToiletBtn);
+            panel.add(endToiletBtn);
+            panel.add(startOtherBreakBtn);
+            panel.add(endOtherBreakBtn);
+
+            panel.add(logoutBtn);
+
+            panel.revalidate();
+            panel.repaint();
+        });
     }
 }
