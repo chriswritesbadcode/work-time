@@ -88,6 +88,7 @@ public class LoginPage implements ActionListener {
                             int userId = rs.getInt(1);
                             String userName = rs.getString(2);
                             String fullName = rs.getString(4);
+                            String role = rs.getString(5);
                             boolean authenticated = PasswordHashing.authenticateUser(storedHash, inputPassword);
 
                             if (inputUsername.equals(rs.getString(2)) && authenticated) {
@@ -112,8 +113,14 @@ public class LoginPage implements ActionListener {
                                 state.setUserId(userId);
                                 state.setFullName(fullName);
                                 state.setUserName(userName);
+                                state.setRole(role);
 
-                                new UserView();
+                                if (state.getRole().equals("agent")) {
+                                    new UserView();
+                                } else if (state.getRole().equals("admin")) {
+                                    new AdminView();
+                                }
+                                loginWindow.dispose();
                             } else {
                                 errorLabel.setText("Incorrect credentials");
                             }

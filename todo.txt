@@ -1,14 +1,11 @@
-ON RUN APP CHECK IF SESSION FILE EXISTS
-    IF YES VALIDATE SESSION TOKEN AND EXP DATE
-        IF VALID, SHOW USERVIEW WITH USER DETAILS
-        IF NO SHOW LOGIN 
-
-ON REGISTER CREATE SESSION FILE AND SAVE TOKEN IN DB
-    THEN DIRECTLY OPEN MENU
-
-store logged in user, and display info on userview
-
-setup buttons to save time of start and end
+REGISTER NOT SHOW USER INFO
 
 create user role, not NULL, default agent vs admin
 if user role is admin, show admin section instead of userview
+
+FOR USERS
+new window title "work times - Fname Lname"
+and display all work times (getWorkTimes(int) and getBreaks(String type, int id)) with pagination + an option to select date AND range 
+
+FOR ADMINS
+all users in a scroll menu, clickable, and each opens a new window with this info (USE EXISTING getWorkTimes and getBreaks fn from before)

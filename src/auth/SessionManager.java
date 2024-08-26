@@ -82,6 +82,7 @@ public class SessionManager {
             state.setUserId(userSet.getInt(1));
             state.setUserName(userSet.getString(2));
             state.setFullName(userSet.getString(4));
+            state.setRole(userSet.getString(5));
 
             con.close();
             return true;

@@ -66,10 +66,8 @@ public class UserView implements ActionListener {
         panel.add(userIdLabel);
 
         if (state.getIsWorking()) {
-            System.out.println("IS WORKING ");
             panel.add(endWorkBtn);
         } else {
-            System.out.println("NOT  WORKING ");
             panel.add(startWorkBtn);
         }
         panel.add(startLunchBtn);
@@ -120,7 +118,6 @@ public class UserView implements ActionListener {
                 startWorkPSTMT.execute();
 
                 state.setIsWorking(true);
-                System.out.println("STARTED WORKING: " + new Date());
 
             } else if (e.getSource() == endWorkBtn) {
                 PreparedStatement endWorkPSTMT = con
@@ -129,7 +126,6 @@ public class UserView implements ActionListener {
                 endWorkPSTMT.setInt(2, state.getUserId());
                 endWorkPSTMT.execute();
 
-                System.out.println("STOPPED WORKING: " + new Date());
                 state.setIsWorking(false);
 
             } else if (e.getSource() == startLunchBtn) {

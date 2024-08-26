@@ -5,6 +5,7 @@ public class AppState {
     private String userName;
     private String fullName;
     private boolean isWorking;
+    private String role;
 
     private static AppState instance;
 
@@ -13,6 +14,7 @@ public class AppState {
         this.userName = null;
         this.fullName = null;
         this.isWorking = false;
+        this.role = "";
     }
 
     public static AppState getInstance() {
@@ -28,6 +30,7 @@ public class AppState {
         return instance;
     }
 
+    // USER NAME
     public String getUserName() {
         return userName;
     }
@@ -36,6 +39,7 @@ public class AppState {
         this.userName = userName;
     }
 
+    // USER ID
     public int getUserId() {
         return id;
     }
@@ -44,6 +48,7 @@ public class AppState {
         this.id = id;
     }
 
+    // FULL NAME
     public String getFullName() {
         return fullName;
     }
@@ -52,11 +57,21 @@ public class AppState {
         this.fullName = fullName;
     }
 
+    // ISOWRKING
     public boolean getIsWorking() {
         return isWorking;
     }
 
     public void setIsWorking(boolean value) {
         this.isWorking = value;
+    }
+
+    // ROLE
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
