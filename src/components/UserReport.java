@@ -1,11 +1,13 @@
 package components;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import consts.Constants;
 
@@ -13,11 +15,14 @@ public class UserReport {
 
     WTWindow userReportWindow = new WTWindow("", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true, false);
     WTPanel userReportPanel = new WTPanel();
+    WTScrollPane scrollPane = new WTScrollPane(userReportPanel);
 
     WTLabel userReportHeading = new WTLabel("", true, "lg", "b", 'c');
     WTLabel errorLabel = new WTLabel("", false, "md", "b", 'c');
 
-    public UserReport(String userData) {
+    public UserReport(
+            String userData) {
+
         String[] parts = userData.split(":");
 
         int userId = Integer.parseInt(parts[0]);
@@ -37,20 +42,42 @@ public class UserReport {
             ResultSet userWorkTimesRS = getUserWorkTimesSTMT
                     .executeQuery(
                             "SELECT a.start, a.end FROM work_times as a JOIN users as b ON a.user_id = b.id WHERE user_id = "
-                                    + userId);
+                                    + userId + " ORDER BY a.start DESC");
 
             if (!userWorkTimesRS.isBeforeFirst()) {
-                errorLabel.setText("No records for: " + fullName + "!"); // GET FULL NAME
+                errorLabel.setText("No records!"); // GET FULL NAME
             } else {
                 while (userWorkTimesRS.next()) {
-                    long startTime = userWorkTimesRS.getLong(1);
-                    long endTime = userWorkTimesRS.getLong(2);
+                    SimpleDateFormat sFormatter = new SimpleDateFormat("EEEE dd/MM/yyyy HH:mm:ss");
+                    DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("EEEE dd/MM/yyyy HH:mm:ss");
 
-                    userReportPanel.add(new WTLabel("Start: " + new Date(startTime) + " " + new Time(startTime), false,
-                            "sm", "b", 'c'));
+                    String startTime = sFormatter.format(userWorkTimesRS.getLong(1));
+                    String endTime = sFormatter.format(userWorkTimesRS.getLong(2));
+
+                    CharSequence chst = startTime;
+                    CharSequence chet = endTime;
+
+                    Duration duration = Duration.between(LocalDateTime.parse(chst, dtFormatter),
+                            LocalDateTime.parse(chet, dtFormatter));
+
+                    long days = duration.toDays();
+                    long hours = duration.toHours() % 24;
+                    long minutes = duration.toMinutes() % 60;
+                    long seconds = duration.toSeconds() % 60;
+
+                    String durationStr = "Duration: " + (days != 0 ? days + " days, " : "") + hours + " hours, "
+                            + minutes + " minutes, "
+                            + seconds + " seconds.";
+
+                    userReportPanel.add(new WTLabel(
+                            "Start: " + startTime, false, "md", "b", 'c'));
                     userReportPanel.add(
-                            new WTLabel("End: " + new Date(endTime) + " " + new Time(endTime), false, "sm", "b",
-                                    'c'));
+                            new WTLabel("End: " + endTime, false, "md", "b", 'c'));
+
+                    userReportPanel.add(
+                            new WTLabel(durationStr, false, "sm", "b", 'c'));
+                    userReportPanel.add(
+                            new WTLabel(" ", false, "sm", "b", 'c'));
 
                 }
             }
@@ -61,7 +88,7 @@ public class UserReport {
 
         userReportPanel.add(errorLabel);
 
-        userReportWindow.add(userReportPanel);
+        userReportWindow.add(scrollPane);
         userReportWindow.setVisible(true);
     }
 }

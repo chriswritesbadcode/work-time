@@ -29,7 +29,7 @@ public class WTLabel extends JLabel {
         this.setText(text);
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.setFont(new Font("Verdana", (heading) ? Font.BOLD : Font.PLAIN,
-                (size.equals("sm")) ? 10 : (size.equals("md")) ? 15 : (size.equals("lg")) ? 20 : 50));
+                (size.equals("sm")) ? 13 : (size.equals("md")) ? 17 : (size.equals("lg")) ? 20 : 50));
         this.setForeground(fgColor);
 
         this.setHorizontalAlignment(

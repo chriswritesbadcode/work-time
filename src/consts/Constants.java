@@ -43,4 +43,5 @@ public final class Constants {
     public static final Pattern FN_PATTERN = Pattern.compile(Constants.FNAME_REGEX);
     public static final Pattern UN_PATTERN = Pattern.compile(Constants.UNAME_REGEX);
     // -----------------------------
+
 }
