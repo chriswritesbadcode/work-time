@@ -21,7 +21,8 @@ import validate.InputValidator;
 import validate.PasswordHashing;
 
 public class RegisterPage implements ActionListener {
-    WTWindow registerWindow = new WTWindow("Work Time Register", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true);
+    WTWindow registerWindow = new WTWindow("Work Time Register", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true,
+            true);
     WTPanel registerPanel = new WTPanel();
 
     WTLabel registerHeading = new WTLabel("Register a new account", true, "lg", "b", 'c');

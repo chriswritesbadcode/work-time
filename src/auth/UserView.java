@@ -21,7 +21,7 @@ public class UserView implements ActionListener {
 
     AppState state = AppState.getInstance();
 
-    WTWindow userWindow = new WTWindow("Work Time", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true);
+    WTWindow userWindow = new WTWindow("Work Time", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true, true);
     WTPanel panel = new WTPanel();
     WTLabel userViewHeading = new WTLabel("Work Time", true, "lg", "b", 'c');
 
@@ -160,10 +160,8 @@ public class UserView implements ActionListener {
             panel.add(userIdLabel);
 
             if (state.getIsWorking()) {
-                System.out.println("IS WORKING ");
                 panel.add(endWorkBtn);
             } else {
-                System.out.println("NOT  WORKING ");
                 panel.add(startWorkBtn);
             }
             panel.add(startLunchBtn);

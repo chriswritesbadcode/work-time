@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import components.UserReport;
 import components.WTButton;
 import components.WTLabel;
 import components.WTPanel;
@@ -17,7 +18,8 @@ import state.AppState;
 public class AdminView implements ActionListener {
     AppState state = AppState.getInstance();
 
-    WTWindow adminWindow = new WTWindow("Work Time - Admin", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true);
+    WTWindow adminWindow = new WTWindow("Work Time - Admin", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true,
+            true);
 
     WTPanel adminPanel = new WTPanel();
 
@@ -35,12 +37,12 @@ public class AdminView implements ActionListener {
             ResultSet usersRS = getUserSTMT.executeQuery("SELECT * FROM users WHERE role != 'sagent'");
             if (!usersRS.isBeforeFirst()) {
                 errorLabel.setText("No users");
-                adminPanel.add(errorLabel);
             } else {
                 while (usersRS.next()) {
                     adminPanel.add(new WTLabel(usersRS.getString(4), false, "sm", "b", 'c'));
                     WTButton userBtn = new WTButton("Details");
-                    userBtn.setActionCommand(usersRS.getString(1)); // GET ID AS STRING -> FN EXPECTS STRING
+                    userBtn.setActionCommand(usersRS.getString(1) + ":" + usersRS.getString(4)); // GET ID AS STRING ->
+                                                                                                 // FN EXPECTS STRING
                     userBtn.addActionListener(this);
                     adminPanel.add(userBtn);
                 }
@@ -50,12 +52,19 @@ public class AdminView implements ActionListener {
             System.out.println("ERROR IN ADMINVIEW GET USERS: " + err);
         }
 
+        adminPanel.add(errorLabel);
+
         adminWindow.add(adminPanel);
         adminWindow.setVisible(true);
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(e.getActionCommand());
+        String userData = e.getActionCommand(); // GET AS STRING COS ITS STORED AS STRING
+
+        if (!userData.isEmpty()) {
+            new UserReport(userData);
+        }
     }
 }

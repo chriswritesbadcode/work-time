@@ -23,7 +23,7 @@ public class LoginPage implements ActionListener {
     AppState state = AppState.getInstance();
 
     WTWindow loginWindow = new WTWindow(
-            "Work Time Login", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true);
+            "Work Time Login", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true, true);
 
     WTPanel loginPanel = new WTPanel();
 
