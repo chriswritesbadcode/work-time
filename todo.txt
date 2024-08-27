@@ -1,4 +1,3 @@
-REGISTER NOT SHOW USER INFO
 logout on admin
 rm end btns on userview
 

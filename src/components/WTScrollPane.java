@@ -9,5 +9,7 @@ public class WTScrollPane extends JScrollPane {
 
         this.setViewportView(view);
         this.setVerticalScrollBarPolicy(WTScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        this.getVerticalScrollBar().setUnitIncrement(12);
     }
 }

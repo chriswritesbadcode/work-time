@@ -14,7 +14,7 @@ import consts.Constants;
 public class UserReport {
 
         WTWindow userReportWindow = new WTWindow("", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true, false);
-        WTPanel userReportPanel = new WTPanel();
+        WTPanel userReportPanel = new WTPanel("box");
         WTScrollPane scrollPane = new WTScrollPane(userReportPanel);
 
         WTLabel userReportHeading = new WTLabel("", true, "lg", "b", 'c');
@@ -92,7 +92,6 @@ public class UserReport {
 
                 userReportPanel.add(errorLabel);
 
-                scrollPane.getVerticalScrollBar().setUnitIncrement(12);
                 userReportWindow.add(scrollPane);
 
                 userReportWindow.setVisible(true);

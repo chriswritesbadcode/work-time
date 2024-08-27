@@ -22,7 +22,7 @@ public class UserView implements ActionListener {
     AppState state = AppState.getInstance();
 
     WTWindow userWindow = new WTWindow("Work Time", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true, true);
-    WTPanel panel = new WTPanel();
+    WTPanel panel = new WTPanel("box");
     WTLabel userViewHeading = new WTLabel("Work Time", true, "lg", "b", 'c');
 
     WTLabel fullNameLabel = new WTLabel(state.getFullName(), false, "sm", "b", 'c');
