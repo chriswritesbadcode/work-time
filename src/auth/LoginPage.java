@@ -100,7 +100,7 @@ public class LoginPage implements ActionListener {
                                 PreparedStatement delFromSessionPSTMT = con
                                         .prepareStatement("DELETE FROM sessions WHERE user_id = ?");
                                 delFromSessionPSTMT.setInt(1, userId);
-                                delFromSessionPSTMT.execute();
+                                delFromSessionPSTMT.executeUpdate();
 
                                 PreparedStatement sessionPSTMT = con.prepareStatement(
                                         "INSERT INTO sessions(user_id, token, expiration_date) VALUES(?, ?, ?)");
@@ -108,7 +108,7 @@ public class LoginPage implements ActionListener {
                                 sessionPSTMT.setInt(1, userId);
                                 sessionPSTMT.setString(2, token);
                                 sessionPSTMT.setLong(3, expirationDate);
-                                sessionPSTMT.execute();
+                                sessionPSTMT.executeUpdate();
 
                                 state.setUserId(userId);
                                 state.setFullName(fullName);

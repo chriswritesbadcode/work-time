@@ -17,10 +17,12 @@ import components.WTSpacer;
 import components.WTTextField;
 import components.WTWindow;
 import consts.Constants;
+import state.AppState;
 import validate.InputValidator;
 import validate.PasswordHashing;
 
 public class RegisterPage implements ActionListener {
+
     WTWindow registerWindow = new WTWindow("Work Time Register", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true,
             true);
     WTPanel registerPanel = new WTPanel();
@@ -42,6 +44,7 @@ public class RegisterPage implements ActionListener {
     WTLabel errorLabel = new WTLabel("", false, "sm", "r", 'c');
 
     public RegisterPage() {
+
         registerPanel.add(registerHeading);
 
         registerPanel.add(fullNameLabel);
@@ -66,6 +69,8 @@ public class RegisterPage implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        AppState state = AppState.getInstance();
+
         if (e.getSource() == registerButton) {
             String fullName = fullNameField.getText();
             String userName = userNameField.getText();
@@ -93,11 +98,23 @@ public class RegisterPage implements ActionListener {
                         String hashedPassword = PasswordHashing.hashPassword(password, salt);
 
                         PreparedStatement pstmt = con
-                                .prepareStatement("INSERT INTO users(full_name, username, password) VALUES(?,?, ?)");
+                                .prepareStatement(
+                                        "INSERT INTO users(full_name, username, password) VALUES(?,?, ?)",
+                                        PreparedStatement.RETURN_GENERATED_KEYS);
                         pstmt.setString(1, fullName);
                         pstmt.setString(2, userName);
                         pstmt.setString(3, hashedPassword);
-                        pstmt.execute();
+                        pstmt.executeUpdate();
+
+                        ResultSet newUserSet = pstmt.getGeneratedKeys();
+                        if (newUserSet.next()) {
+                            int generatedId = newUserSet.getInt(1);
+                            state.setUserId(generatedId);
+                        }
+
+                        state.setFullName(fullName);
+                        state.setUserName(userName);
+                        state.setRole("agent");
 
                         registerWindow.dispose();
                         new UserView();

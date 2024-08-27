@@ -1,7 +1,6 @@
 REGISTER NOT SHOW USER INFO
-
-create user role, not NULL, default agent vs admin
-if user role is admin, show admin section instead of userview
+logout on admin
+rm end btns on userview
 
 FOR USERS
 new window title "work times - Fname Lname"

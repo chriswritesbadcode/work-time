@@ -34,7 +34,7 @@ public class AdminView implements ActionListener {
             Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
                     Constants.DB_PASSWORD);
             Statement getUserSTMT = con.createStatement();
-            ResultSet usersRS = getUserSTMT.executeQuery("SELECT * FROM users WHERE role != 'sagent'");
+            ResultSet usersRS = getUserSTMT.executeQuery("SELECT * FROM users WHERE role = 'agent'");
             if (!usersRS.isBeforeFirst()) {
                 errorLabel.setText("No users");
             } else {

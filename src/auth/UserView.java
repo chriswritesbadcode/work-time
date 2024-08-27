@@ -27,16 +27,15 @@ public class UserView implements ActionListener {
 
     WTLabel fullNameLabel = new WTLabel(state.getFullName(), false, "sm", "b", 'c');
     WTLabel userNameLabel = new WTLabel(state.getUserName(), false, "sm", "b", 'c');
-    WTLabel userIdLabel = new WTLabel(Integer.toString(state.getUserId()), false, "sm", "b", 'c');
 
-    WTButton endOtherBreakBtn = new WTButton("Start Break");
-    WTButton startOtherBreakBtn = new WTButton("End Break");
-    WTButton endToiletBtn = new WTButton("End Toilet Break");
-    WTButton startToiletBtn = new WTButton("Start Toilet Break");
-    WTButton endLunchBtn = new WTButton("End Lunch");
-    WTButton startLunchBtn = new WTButton("Start Lunch");
     WTButton endWorkBtn = new WTButton("End Work");
     WTButton startWorkBtn = new WTButton("Start Work");
+    WTButton endLunchBtn = new WTButton("End Lunch");
+    WTButton startLunchBtn = new WTButton("Start Lunch");
+    WTButton endToiletBtn = new WTButton("End Toilet Break");
+    WTButton startToiletBtn = new WTButton("Start Toilet Break");
+    WTButton endOtherBreakBtn = new WTButton("Start Break");
+    WTButton startOtherBreakBtn = new WTButton("End Break");
 
     WTButton logoutBtn = new WTButton("Logout");
 
@@ -63,7 +62,6 @@ public class UserView implements ActionListener {
 
         panel.add(fullNameLabel);
         panel.add(userNameLabel);
-        panel.add(userIdLabel);
 
         if (state.getIsWorking()) {
             panel.add(endWorkBtn);
@@ -103,7 +101,7 @@ public class UserView implements ActionListener {
             if (e.getSource() == logoutBtn) {
                 PreparedStatement logoutPSTMT = con.prepareStatement("DELETE FROM sessions WHERE user_id = ?");
                 logoutPSTMT.setInt(1, state.getUserId());
-                logoutPSTMT.execute();
+                logoutPSTMT.executeUpdate();
 
                 SessionManager.invalidateSession();
 
@@ -115,7 +113,7 @@ public class UserView implements ActionListener {
                         .prepareStatement("INSERT INTO work_times(user_id, start) VALUES(?, ?)");
                 startWorkPSTMT.setInt(1, state.getUserId());
                 startWorkPSTMT.setLong(2, new Date().getTime());
-                startWorkPSTMT.execute();
+                startWorkPSTMT.executeUpdate();
 
                 state.setIsWorking(true);
 
@@ -124,7 +122,7 @@ public class UserView implements ActionListener {
                         .prepareStatement("UPDATE work_times SET end = ? WHERE end IS NULL AND user_id = ?");
                 endWorkPSTMT.setLong(1, new Date().getTime());
                 endWorkPSTMT.setInt(2, state.getUserId());
-                endWorkPSTMT.execute();
+                endWorkPSTMT.executeUpdate();
 
                 state.setIsWorking(false);
 
@@ -157,7 +155,6 @@ public class UserView implements ActionListener {
 
             panel.add(fullNameLabel);
             panel.add(userNameLabel);
-            panel.add(userIdLabel);
 
             if (state.getIsWorking()) {
                 panel.add(endWorkBtn);
