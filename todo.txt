@@ -1,5 +1,7 @@
-logout on admin
-rm end btns on userview
+BREAK / WORKING relations
+
+
+setEnabled false if on break or if NOT working
 
 FOR USERS
 new window title "work times - Fname Lname"

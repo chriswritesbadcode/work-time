@@ -6,6 +6,8 @@ public class AppState {
     private String fullName;
     private boolean isWorking;
     private String role;
+    private boolean isOnBreak;
+    private String breakType;
 
     private static AppState instance;
 
@@ -15,6 +17,8 @@ public class AppState {
         this.fullName = null;
         this.isWorking = false;
         this.role = "";
+        this.isOnBreak = false;
+        this.breakType = "";
     }
 
     public static AppState getInstance() {
@@ -62,8 +66,8 @@ public class AppState {
         return isWorking;
     }
 
-    public void setIsWorking(boolean value) {
-        this.isWorking = value;
+    public void setIsWorking(boolean bool) {
+        this.isWorking = bool;
     }
 
     // ROLE
@@ -73,5 +77,22 @@ public class AppState {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    // BREAKS
+    public boolean getIsOnBreak() {
+        return isOnBreak;
+    }
+
+    public String getBreakType() {
+        return breakType;
+    }
+
+    public void setIsOnBreak(boolean bool) {
+        this.isOnBreak = bool;
+    }
+
+    public void setBreakType(String breakType) {
+        this.breakType = breakType;
     }
 }

@@ -59,7 +59,7 @@ public class AdminView implements ActionListener {
 
                 }
             }
-
+            con.close();
         } catch (Exception err) {
             System.out.println("ERROR IN ADMINVIEW GET USERS: " + err);
         }
@@ -67,7 +67,7 @@ public class AdminView implements ActionListener {
         adminPanel.add(contentPanel);
         adminPanel.add(errorLabel);
         // SPACERS
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             adminPanel
                     .add(new WTSpacer(new Dimension(Constants.LARGE_Y_SPACER_WIDTH, Constants.LARGE_Y_SPACER_HEIGHT)));
         }
@@ -100,6 +100,7 @@ public class AdminView implements ActionListener {
                     new UserReport(userData);
                 }
             }
+            con.close();
         } catch (Exception err) {
             System.out.println("ERROR IN ADMIN VIEW - ACTION PERFORMED OVERRIDE: " + err);
         }

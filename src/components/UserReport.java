@@ -85,7 +85,7 @@ public class UserReport {
 
                                 }
                         }
-
+                        con.close();
                 } catch (Exception err) {
                         System.out.println("ERROR IN USER REPORT ACTION PERFORMED: " + err);
                 }

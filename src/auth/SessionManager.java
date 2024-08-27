@@ -78,7 +78,9 @@ public class SessionManager {
             PreparedStatement userPSTMT = con.prepareStatement("SELECT * FROM users WHERE id = ?");
             userPSTMT.setInt(1, dbUserId);
             ResultSet userSet = userPSTMT.executeQuery();
+
             userSet.next();
+
             state.setUserId(userSet.getInt(1));
             state.setUserName(userSet.getString(2));
             state.setFullName(userSet.getString(4));
