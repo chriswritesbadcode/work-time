@@ -9,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import components.UserReport;
 import components.WTButton;
 import components.WTLabel;
 import components.WTPanel;
@@ -17,6 +16,7 @@ import components.WTScrollPane;
 import components.WTSpacer;
 import components.WTWindow;
 import consts.Constants;
+import sections.UserReport;
 import state.AppState;
 
 public class AdminView implements ActionListener {

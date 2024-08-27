@@ -1,4 +1,4 @@
-package components;
+package sections;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,6 +9,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import components.WTLabel;
+import components.WTPanel;
+import components.WTScrollPane;
+import components.WTWindow;
 import consts.Constants;
 
 public class UserReport {

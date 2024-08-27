@@ -1,6 +1,5 @@
 FOR USERS
-new window title "work times - Fname Lname"
-and display all work times (getWorkTimes(int) and getBreaks(String type, int id)) with pagination + an option to select date AND range 
+display and getBreaks(String type, int id) with pagination + an option to select date AND range 
 
 FOR ADMINS
 all users in a scroll menu, clickable, and each opens a new window with this info (USE EXISTING getWorkTimes and getBreaks fn from before)
