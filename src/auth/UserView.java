@@ -16,12 +16,13 @@ import components.WTPanel;
 import components.WTWindow;
 import consts.Constants;
 import state.AppState;
+import utils.UserViewUtils;
 
 public class UserView implements ActionListener {
 
     AppState state = AppState.getInstance();
 
-    WTWindow userWindow = new WTWindow("Work Time", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true, true);
+    WTWindow userWindow = new WTWindow("", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true, true);
     WTPanel mainPanel = new WTPanel("box");
     WTPanel contentPanel = new WTPanel("");
 
@@ -41,6 +42,7 @@ public class UserView implements ActionListener {
     WTButton logoutBtn = new WTButton("Logout");
 
     public UserView() {
+        userWindow.setTitle("Work Time - " + state.getFullName());
 
         try {
             Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
@@ -74,54 +76,9 @@ public class UserView implements ActionListener {
         }
 
         mainPanel.add(userViewHeading);
-
         mainPanel.add(fullNameLabel);
 
-        // DISABLE OR ENABLE BUTTONS
-        if (state.getIsWorking()) {
-            contentPanel.add(endWorkBtn);
-
-            startLunchBtn.setEnabled(true);
-            startToiletBtn.setEnabled(true);
-            startOtherBreakBtn.setEnabled(true);
-            logoutBtn.setEnabled(false);
-
-            if (state.getIsOnBreak()) {
-                if (state.getBreakType().equals("lunch")) {
-                    contentPanel.add(endLunchBtn);
-                    contentPanel.add(startToiletBtn);
-                    contentPanel.add(startOtherBreakBtn);
-
-                    disableButtons("toilet,other,work");
-                } else if (state.getBreakType().equals("toilet")) {
-                    contentPanel.add(startLunchBtn);
-                    contentPanel.add(endToiletBtn);
-                    contentPanel.add(startOtherBreakBtn);
-
-                    disableButtons("lunch,other,work");
-                } else if (state.getBreakType().equals("other")) {
-                    contentPanel.add(startLunchBtn);
-                    contentPanel.add(startToiletBtn);
-                    contentPanel.add(endOtherBreakBtn);
-
-                    disableButtons("toilet,lunch,work");
-                }
-            } else {
-                contentPanel.add(startLunchBtn);
-                contentPanel.add(startToiletBtn);
-                contentPanel.add(startOtherBreakBtn);
-            }
-        } else {
-            contentPanel.add(startWorkBtn);
-
-            contentPanel.add(startLunchBtn);
-            contentPanel.add(startToiletBtn);
-            contentPanel.add(startOtherBreakBtn);
-
-            disableButtons("lunch,toilet,other");
-            logoutBtn.setEnabled(true);
-
-        }
+        updateUI();
 
         mainPanel.add(contentPanel);
         mainPanel.add(logoutBtn);
@@ -178,26 +135,26 @@ public class UserView implements ActionListener {
             } else if (e.getSource() == startLunchBtn) {
                 state.setIsOnBreak(true);
                 state.setBreakType("lunch");
-                startBreak();
+                UserViewUtils.startBreak();
             } else if (e.getSource() == endLunchBtn) {
-                endBreak();
-                resetBreak();
+                UserViewUtils.endBreak();
+                UserViewUtils.resetBreak();
 
             } else if (e.getSource() == startToiletBtn) {
                 state.setIsOnBreak(true);
                 state.setBreakType("toilet");
-                startBreak();
+                UserViewUtils.startBreak();
             } else if (e.getSource() == endToiletBtn) {
-                endBreak();
-                resetBreak();
+                UserViewUtils.endBreak();
+                UserViewUtils.resetBreak();
 
             } else if (e.getSource() == startOtherBreakBtn) {
                 state.setIsOnBreak(true);
                 state.setBreakType("other");
-                startBreak();
+                UserViewUtils.startBreak();
             } else if (e.getSource() == endOtherBreakBtn) {
-                endBreak();
-                resetBreak();
+                UserViewUtils.endBreak();
+                UserViewUtils.resetBreak();
             }
 
             con.close();
@@ -225,19 +182,26 @@ public class UserView implements ActionListener {
                         contentPanel.add(startToiletBtn);
                         contentPanel.add(startOtherBreakBtn);
 
-                        disableButtons("toilet,other,work");
+                        UserViewUtils.disableButtons("toilet,other,work", startLunchBtn, startToiletBtn,
+                                startOtherBreakBtn, endWorkBtn);
                     } else if (state.getBreakType().equals("toilet")) {
                         contentPanel.add(startLunchBtn);
                         contentPanel.add(endToiletBtn);
                         contentPanel.add(startOtherBreakBtn);
 
-                        disableButtons("lunch,other,work");
+                        UserViewUtils.disableButtons("lunch,other,work", startLunchBtn, startToiletBtn,
+                                startOtherBreakBtn,
+                                endWorkBtn);
                     } else if (state.getBreakType().equals("other")) {
                         contentPanel.add(startLunchBtn);
                         contentPanel.add(startToiletBtn);
                         contentPanel.add(endOtherBreakBtn);
 
-                        disableButtons("toilet,lunch,work");
+                        UserViewUtils.disableButtons("lunch,toilet,other", startLunchBtn, startToiletBtn,
+                                startOtherBreakBtn, endWorkBtn);
+
+                        UserViewUtils.disableButtons("toilet,lunch,work", startLunchBtn, startToiletBtn,
+                                startOtherBreakBtn, endWorkBtn);
                     }
                 } else {
                     contentPanel.add(startLunchBtn);
@@ -254,9 +218,9 @@ public class UserView implements ActionListener {
                 contentPanel.add(startToiletBtn);
                 contentPanel.add(startOtherBreakBtn);
 
-                disableButtons("lunch,toilet,other");
+                UserViewUtils.disableButtons("lunch,toilet,other", startLunchBtn, startToiletBtn, startOtherBreakBtn,
+                        endWorkBtn);
                 logoutBtn.setEnabled(true);
-
             }
 
             contentPanel.repaint();
@@ -264,61 +228,4 @@ public class UserView implements ActionListener {
         });
     }
 
-    private void resetBreak() {
-        state.setIsOnBreak(false);
-        state.setBreakType("");
-    }
-
-    private void disableButtons(String csv) {
-        String[] btnTypes = csv.split(",");
-
-        for (String btnType : btnTypes) {
-            if (btnType.equals("lunch")) {
-                startLunchBtn.setEnabled(false);
-            } else if (btnType.equals("toilet")) {
-                startToiletBtn.setEnabled(false);
-            } else if (btnType.equals("other")) {
-                startOtherBreakBtn.setEnabled(false);
-            } else if (btnType.equals("work")) {
-                endWorkBtn.setEnabled(false);
-            }
-        }
-
-    }
-
-    private void startBreak() {
-        try {
-            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
-                    Constants.DB_PASSWORD);
-            PreparedStatement startBreakPSTMT = con
-                    .prepareStatement("INSERT INTO breaks(user_id, start, type) VALUES(?, ?, ?)");
-            startBreakPSTMT.setInt(1, state.getUserId());
-            startBreakPSTMT.setLong(2, new Date().getTime());
-            startBreakPSTMT.setString(3, state.getBreakType());
-            startBreakPSTMT.execute();
-
-            con.close();
-        } catch (Exception err) {
-            System.out.println("ERROR IN USER VIEW START BREAK: " + err);
-        }
-    }
-
-    private void endBreak() {
-        try {
-            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
-                    Constants.DB_PASSWORD);
-            PreparedStatement endBreakPSTMT = con
-                    .prepareStatement("UPDATE breaks SET end = ? WHERE end IS NULL AND user_id = ?");
-            endBreakPSTMT.setLong(1, new Date().getTime());
-            endBreakPSTMT.setInt(2, state.getUserId());
-
-            endBreakPSTMT.executeUpdate();
-
-            System.out.println("ENDED BREAK");
-
-            con.close();
-        } catch (Exception err) {
-            System.out.println("ERROR IN USER VIEW END BREAK: " + err);
-        }
-    }
 }

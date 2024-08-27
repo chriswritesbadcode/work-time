@@ -1,8 +1,3 @@
-BREAK / WORKING relations
-
-
-setEnabled false if on break or if NOT working
-
 FOR USERS
 new window title "work times - Fname Lname"
 and display all work times (getWorkTimes(int) and getBreaks(String type, int id)) with pagination + an option to select date AND range 

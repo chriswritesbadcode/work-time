@@ -67,7 +67,7 @@ public class AdminView implements ActionListener {
         adminPanel.add(contentPanel);
         adminPanel.add(errorLabel);
         // SPACERS
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             adminPanel
                     .add(new WTSpacer(new Dimension(Constants.LARGE_Y_SPACER_WIDTH, Constants.LARGE_Y_SPACER_HEIGHT)));
         }
