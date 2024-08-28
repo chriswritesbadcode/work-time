@@ -3,11 +3,11 @@ package auth;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.sql.*;
 
 import consts.Constants;
 import state.AppState;
+import utils.GeneralUtils;
 import components.WTButton;
 import components.WTLabel;
 import components.WTPanel;
@@ -60,6 +60,9 @@ public class LoginPage implements ActionListener {
 
         loginWindow.add(loginPanel);
         loginWindow.setVisible(true);
+
+        GeneralUtils.addListenerForEnter(loginBtn);
+
     }
 
     @Override

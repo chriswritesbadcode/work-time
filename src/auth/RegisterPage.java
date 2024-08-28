@@ -18,6 +18,7 @@ import components.WTTextField;
 import components.WTWindow;
 import consts.Constants;
 import state.AppState;
+import utils.GeneralUtils;
 import validate.InputValidator;
 import validate.PasswordHashing;
 
@@ -65,6 +66,8 @@ public class RegisterPage implements ActionListener {
 
         registerWindow.add(registerPanel);
         registerWindow.setVisible(true);
+
+        GeneralUtils.addListenerForEnter(registerButton);
     }
 
     @Override

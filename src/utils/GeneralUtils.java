@@ -1,6 +1,11 @@
 package utils;
 
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
+
+import components.WTButton;
 
 public class GeneralUtils {
     GeneralUtils() {
@@ -11,5 +16,17 @@ public class GeneralUtils {
         SimpleDateFormat formatter = new SimpleDateFormat(pattern);
 
         return formatter.format(time);
+    }
+
+    public static void addListenerForEnter(WTButton button) {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent e) {
+                if (e.getKeyChar() == '\n') {
+                    button.doClick();
+                }
+                return false;
+            }
+        });
     }
 }
