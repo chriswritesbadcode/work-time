@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 import components.WTLabel;
@@ -19,7 +19,7 @@ public class UserReport {
 
         WTWindow userReportWindow = new WTWindow("", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true, false);
         WTPanel userReportPanel = new WTPanel("box");
-
+        WTPanel contentPanel = new WTPanel("");
         WTScrollPane scrollPane = new WTScrollPane(userReportPanel);
 
         WTLabel userReportHeading = new WTLabel("", true, "lg", "b", 'c');
@@ -53,39 +53,44 @@ public class UserReport {
                         if (!userWorkTimesRS.isBeforeFirst()) {
                                 errorLabel.setText("No records!"); // GET FULL NAME
                         } else {
-                                String pattern = "EEEE dd/MM/yyyy HH:mm:ss";
+                                // String fullPattern = "EEEE dd/MM/yyyy HH:mm:ss";
+                                String hmPattern = "HH:mm";
+                                String dmyPattern = "dd/MM/yyyy";
                                 while (userWorkTimesRS.next()) {
-                                        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern(pattern);
+                                        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern(hmPattern);
 
-                                        String startTime = GeneralUtils.formatDate(pattern, userWorkTimesRS.getLong(1));
-                                        String endTime = GeneralUtils.formatDate(pattern, userWorkTimesRS.getLong(2));
+                                        String startTime = GeneralUtils.formatDate(hmPattern,
+                                                        userWorkTimesRS.getLong(1));
+                                        String endTime = GeneralUtils.formatDate(hmPattern,
+                                                        userWorkTimesRS.getLong(2));
 
                                         CharSequence csStartTime = startTime;
                                         CharSequence csEndTime = endTime;
 
                                         Duration duration = Duration.between(
-                                                        LocalDateTime.parse(csStartTime, dtFormatter),
-                                                        LocalDateTime.parse(csEndTime, dtFormatter));
+                                                        LocalTime.parse(csStartTime, dtFormatter),
+                                                        LocalTime.parse(csEndTime, dtFormatter));
 
                                         long days = duration.toDays();
                                         long hours = duration.toHours() % 24;
                                         long minutes = duration.toMinutes() % 60;
-                                        long seconds = duration.toSeconds() % 60;
 
-                                        String durationStr = (days != 0 ? days + " days, " : "") + hours + " hours, "
-                                                        + minutes + " minutes, "
-                                                        + seconds + " seconds.";
+                                        String durationStr = (days != 0 ? days + "d, " : "") + hours + "h, "
+                                                        + minutes + "m";
 
-                                        userReportPanel.add(new WTLabel(
-                                                        "Start: " + startTime, false, "md", "b", 'c'));
-                                        userReportPanel.add(
-                                                        new WTLabel("End: " + endTime, false, "md", "b", 'c'));
+                                        WTPanel innerContentPanel = new WTPanel("box");
+                                        innerContentPanel.add(new WTLabel(
+                                                        GeneralUtils.formatDate(dmyPattern, userWorkTimesRS.getLong(1)),
+                                                        true, "sm", "b", 'c'));
+                                        innerContentPanel.add(new WTLabel(
+                                                        "Work: " + startTime + " to " + endTime, false, "md", "b",
+                                                        'c'));
 
-                                        userReportPanel.add(
+                                        innerContentPanel.add(
                                                         new WTLabel(durationStr, false, "sm", "b", 'c'));
-                                        userReportPanel.add(
+                                        innerContentPanel.add(
                                                         new WTLabel(" ", false, "sm", "b", 'c'));
-
+                                        contentPanel.add(innerContentPanel);
                                 }
                         }
                         con.close();
@@ -94,6 +99,7 @@ public class UserReport {
                 }
 
                 userReportPanel.add(errorLabel);
+                userReportPanel.add(contentPanel);
 
                 userReportWindow.add(scrollPane);
 
