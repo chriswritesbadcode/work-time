@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +13,7 @@ import components.WTPanel;
 import components.WTScrollPane;
 import components.WTWindow;
 import consts.Constants;
+import utils.GeneralUtils;
 
 public class UserReport {
 
@@ -53,18 +53,20 @@ public class UserReport {
                                 errorLabel.setText("No records!"); // GET FULL NAME
                         } else {
                                 while (userWorkTimesRS.next()) {
-                                        SimpleDateFormat sFormatter = new SimpleDateFormat("EEEE dd/MM/yyyy HH:mm:ss");
                                         DateTimeFormatter dtFormatter = DateTimeFormatter
                                                         .ofPattern("EEEE dd/MM/yyyy HH:mm:ss");
 
-                                        String startTime = sFormatter.format(userWorkTimesRS.getLong(1));
-                                        String endTime = sFormatter.format(userWorkTimesRS.getLong(2));
+                                        String startTime = GeneralUtils.formatDate("EEEE dd/MM/yyyy HH:mm:ss",
+                                                        userWorkTimesRS.getLong(1));
+                                        String endTime = GeneralUtils.formatDate("EEEE dd/MM/yyyy HH:mm:ss",
+                                                        userWorkTimesRS.getLong(2));
 
-                                        CharSequence chst = startTime;
-                                        CharSequence chet = endTime;
+                                        CharSequence csStartTime = startTime;
+                                        CharSequence csEndTime = endTime;
 
-                                        Duration duration = Duration.between(LocalDateTime.parse(chst, dtFormatter),
-                                                        LocalDateTime.parse(chet, dtFormatter));
+                                        Duration duration = Duration.between(
+                                                        LocalDateTime.parse(csStartTime, dtFormatter),
+                                                        LocalDateTime.parse(csEndTime, dtFormatter));
 
                                         long days = duration.toDays();
                                         long hours = duration.toHours() % 24;

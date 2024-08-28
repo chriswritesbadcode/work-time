@@ -7,8 +7,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.SwingUtilities;
@@ -19,6 +17,7 @@ import components.WTPanel;
 import components.WTWindow;
 import consts.Constants;
 import state.AppState;
+import utils.GeneralUtils;
 import utils.UserViewUtils;
 
 public class UserView implements ActionListener {
@@ -49,7 +48,6 @@ public class UserView implements ActionListener {
 
     public UserView() {
         userWindow.setTitle("Work Time - " + state.getFullName());
-        System.out.println(new Date().getTime());
         try {
             Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
                     Constants.DB_PASSWORD);
@@ -190,11 +188,11 @@ public class UserView implements ActionListener {
                 ResultSet isOnBreakData = isOnBreakSTMT
                         .executeQuery("SELECT * FROM breaks WHERE end IS NULL AND user_id = " + state.getUserId());
 
-                SimpleDateFormat sFormatter = new SimpleDateFormat("HH:mm");
                 if (isWorkingData.isBeforeFirst()) {
                     isWorkingData.next();
 
-                    workStatusLabel.setText("Working since " + sFormatter.format(isWorkingData.getLong(3)));
+                    workStatusLabel
+                            .setText("Working since " + GeneralUtils.formatDate("HH:mm", isWorkingData.getLong(3)));
                 } else {
                     workStatusLabel.setText("Not working");
                 }
@@ -202,7 +200,7 @@ public class UserView implements ActionListener {
                     isOnBreakData.next();
 
                     breakStatusLabel.setText("On " + isOnBreakData.getString(5) + " break since "
-                            + sFormatter.format(isOnBreakData.getLong(3)));
+                            + GeneralUtils.formatDate("HH:mm", isOnBreakData.getLong(3)));
                 } else {
                     breakStatusLabel.setText("Not on break");
                 }

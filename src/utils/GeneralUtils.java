@@ -1,11 +1,15 @@
 package utils;
 
+import java.text.SimpleDateFormat;
+
 public class GeneralUtils {
     GeneralUtils() {
 
     }
 
-    private static long getHoursDuration(long biggerTime, long smallerTime) {
-        return biggerTime - smallerTime;
+    public static String formatDate(String pattern, long time) {
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+
+        return formatter.format(time);
     }
 }
