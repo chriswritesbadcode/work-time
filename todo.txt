@@ -1,3 +1,8 @@
+show ON BREAK: 15MIN 20sec
+WORKING
+SHOW BREAK DURATIONS
+add confirmation DO YOU REALLY WANT TO STOP WORKING?
+
 FOR USERS
 display and getBreaks(String type, int id) with pagination + an option to select date AND range 
 

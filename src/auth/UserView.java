@@ -6,6 +6,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.SwingUtilities;
@@ -25,9 +28,9 @@ public class UserView implements ActionListener {
     WTWindow userWindow = new WTWindow("", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true, true);
     WTPanel mainPanel = new WTPanel("box");
     WTPanel contentPanel = new WTPanel("");
+    WTPanel statusPanel = new WTPanel("box");
 
     WTLabel userViewHeading = new WTLabel("Work Time", true, "lg", "b", 'c');
-
     WTLabel fullNameLabel = new WTLabel(state.getFullName(), false, "sm", "b", 'c');
 
     WTButton endWorkBtn = new WTButton("End Work");
@@ -39,11 +42,14 @@ public class UserView implements ActionListener {
     WTButton endOtherBreakBtn = new WTButton("End Break");
     WTButton startOtherBreakBtn = new WTButton("Start Break");
 
+    WTLabel workStatusLabel = new WTLabel("Not working", false, "sm", "bb", 'c');
+    WTLabel breakStatusLabel = new WTLabel("Not on break", false, "sm", "bb", 'c');
+
     WTButton logoutBtn = new WTButton("Logout");
 
     public UserView() {
         userWindow.setTitle("Work Time - " + state.getFullName());
-
+        System.out.println(new Date().getTime());
         try {
             Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
                     Constants.DB_PASSWORD);
@@ -53,6 +59,8 @@ public class UserView implements ActionListener {
             ResultSet workingData = isWorkingPSTMT.executeQuery();
             if (workingData.isBeforeFirst()) {
                 state.setIsWorking(true);
+                workingData.next();
+
             } else {
                 state.setIsWorking(false);
             }
@@ -167,6 +175,42 @@ public class UserView implements ActionListener {
     private void updateUI() {
         SwingUtilities.invokeLater(() -> {
             contentPanel.removeAll();
+
+            try {
+
+                Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
+                        Constants.DB_PASSWORD);
+
+                Statement isWorkingSTMT = con.createStatement();
+                Statement isOnBreakSTMT = con.createStatement();
+
+                ResultSet isWorkingData = isWorkingSTMT
+                        .executeQuery("SELECT * FROM work_times WHERE end IS NULL AND user_id = " + state.getUserId());
+
+                ResultSet isOnBreakData = isOnBreakSTMT
+                        .executeQuery("SELECT * FROM breaks WHERE end IS NULL AND user_id = " + state.getUserId());
+
+                SimpleDateFormat sFormatter = new SimpleDateFormat("HH:mm");
+                if (isWorkingData.isBeforeFirst()) {
+                    isWorkingData.next();
+
+                    workStatusLabel.setText("Working since " + sFormatter.format(isWorkingData.getLong(3)));
+                } else {
+                    workStatusLabel.setText("Not working");
+                }
+                if (isOnBreakData.isBeforeFirst()) {
+                    isOnBreakData.next();
+
+                    breakStatusLabel.setText("On " + isOnBreakData.getString(5) + " break since "
+                            + sFormatter.format(isOnBreakData.getLong(3)));
+                } else {
+                    breakStatusLabel.setText("Not on break");
+                }
+
+            } catch (Exception err) {
+                System.out.println("ERROR IN USER VIEW UPDATE UI: " + err);
+            }
+
             if (state.getIsWorking()) {
                 contentPanel.add(endWorkBtn);
 
@@ -223,6 +267,10 @@ public class UserView implements ActionListener {
                 logoutBtn.setEnabled(true);
             }
 
+            statusPanel.add(workStatusLabel);
+            statusPanel.add(breakStatusLabel);
+
+            contentPanel.add(statusPanel);
             contentPanel.repaint();
             contentPanel.revalidate();
         });

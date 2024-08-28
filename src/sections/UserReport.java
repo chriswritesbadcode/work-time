@@ -57,8 +57,6 @@ public class UserReport {
                                         DateTimeFormatter dtFormatter = DateTimeFormatter
                                                         .ofPattern("EEEE dd/MM/yyyy HH:mm:ss");
 
-                                        System.out.println("YEARS since epoch: "
-                                                        + new java.util.Date().getTime() / 1000 / 60 / 60 / 24 / 365);
                                         String startTime = sFormatter.format(userWorkTimesRS.getLong(1));
                                         String endTime = sFormatter.format(userWorkTimesRS.getLong(2));
 
