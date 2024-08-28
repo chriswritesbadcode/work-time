@@ -45,19 +45,22 @@ public class UserReport {
                                         Constants.DB_PASSWORD);
 
                         Statement getUserWorkTimesSTMT = con.createStatement();
+                        Statement getUserBreaksSTMT = con.createStatement();
                         ResultSet userWorkTimesRS = getUserWorkTimesSTMT
-                                        .executeQuery(
-                                                        "SELECT a.start, a.end FROM work_times as a JOIN users as b ON a.user_id = b.id WHERE user_id = "
-                                                                        + userId + " ORDER BY a.start DESC");
+                                        .executeQuery("SELECT start, end FROM work_times WHERE user_id = " + userId
+                                                        + " ORDER BY start DESC");
+                        ResultSet userBreaksRS = getUserBreaksSTMT
+                                        .executeQuery("SELECT start, end, type FROM breaks WHERE user_id = " + userId
+                                                        + " ORDER BY start DESC");
 
                         if (!userWorkTimesRS.isBeforeFirst()) {
-                                errorLabel.setText("No records!"); // GET FULL NAME
+                                errorLabel.setText("No records!");
                         } else {
-                                // String fullPattern = "EEEE dd/MM/yyyy HH:mm:ss";
                                 String hmPattern = "HH:mm";
                                 String dmyPattern = "dd/MM/yyyy";
+                                DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern(hmPattern);
+
                                 while (userWorkTimesRS.next()) {
-                                        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern(hmPattern);
 
                                         String startTime = GeneralUtils.formatDate(hmPattern,
                                                         userWorkTimesRS.getLong(1));
@@ -78,19 +81,57 @@ public class UserReport {
                                         String durationStr = (days != 0 ? days + "d, " : "") + hours + "h, "
                                                         + minutes + "m";
 
-                                        WTPanel innerContentPanel = new WTPanel("box");
-                                        innerContentPanel.add(new WTLabel(
+                                        WTPanel workGroupPanel = new WTPanel("box");
+                                        workGroupPanel.add(new WTLabel(
                                                         GeneralUtils.formatDate(dmyPattern, userWorkTimesRS.getLong(1)),
                                                         true, "sm", "b", 'c'));
-                                        innerContentPanel.add(new WTLabel(
+
+                                        workGroupPanel.add(new WTLabel(
                                                         "Work: " + startTime + " to " + endTime, false, "md", "b",
                                                         'c'));
 
-                                        innerContentPanel.add(
+                                        workGroupPanel.add(
                                                         new WTLabel(durationStr, false, "sm", "b", 'c'));
-                                        innerContentPanel.add(
-                                                        new WTLabel(" ", false, "sm", "b", 'c'));
-                                        contentPanel.add(innerContentPanel);
+                                        contentPanel.add(workGroupPanel);
+                                }
+
+                                contentPanel.add(new WTLabel("BREAKS", true, "lg", "b", 'c'));
+                                contentPanel.add(new WTLabel("BREAKS", true, "lg", "b", 'c'));
+                                contentPanel.add(new WTLabel("BREAKS", true, "lg", "b", 'c'));
+                                contentPanel.add(new WTLabel("BREAKS", true, "lg", "b", 'c'));
+                                contentPanel.add(new WTLabel("BREAKS", true, "lg", "b", 'c'));
+                                contentPanel.add(new WTLabel("BREAKS", true, "lg", "b", 'c'));
+
+                                while (userBreaksRS.next()) {
+                                        String startTime = GeneralUtils.formatDate(hmPattern,
+                                                        userBreaksRS.getLong(1));
+                                        String endTime = GeneralUtils.formatDate(hmPattern,
+                                                        userBreaksRS.getLong(2));
+
+                                        CharSequence csStarTime = startTime;
+                                        CharSequence csEndTime = endTime;
+
+                                        Duration duration = Duration.between(LocalTime.parse(csStarTime, dtFormatter),
+                                                        LocalTime.parse(csEndTime, dtFormatter));
+
+                                        long days = duration.toDays();
+                                        long hours = duration.toHours() % 24;
+                                        long minutes = duration.toMinutes() % 60;
+
+                                        String durationStr = (days != 0 ? days + "d, " : "") + hours + "h, " + minutes
+                                                        + "m";
+
+                                        WTPanel breakGroupPanel = new WTPanel("box");
+                                        breakGroupPanel.add(new WTLabel(
+                                                        GeneralUtils.formatDate(dmyPattern, userBreaksRS.getLong(1)),
+                                                        true, "sm", "b", 'c'));
+
+                                        breakGroupPanel.add(new WTLabel("Break: " + startTime + " to " + endTime, false,
+                                                        "md", "b", 'c'));
+
+                                        breakGroupPanel.add(new WTLabel(durationStr, false, "sm", "b", 'c'));
+
+                                        contentPanel.add(breakGroupPanel);
                                 }
                         }
                         con.close();
