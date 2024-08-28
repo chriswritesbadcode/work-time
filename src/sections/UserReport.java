@@ -19,6 +19,7 @@ public class UserReport {
 
         WTWindow userReportWindow = new WTWindow("", Constants.DEF_WINDOW_W, Constants.DEF_WINDOW_H, true, false);
         WTPanel userReportPanel = new WTPanel("box");
+
         WTScrollPane scrollPane = new WTScrollPane(userReportPanel);
 
         WTLabel userReportHeading = new WTLabel("", true, "lg", "b", 'c');
@@ -52,14 +53,12 @@ public class UserReport {
                         if (!userWorkTimesRS.isBeforeFirst()) {
                                 errorLabel.setText("No records!"); // GET FULL NAME
                         } else {
+                                String pattern = "EEEE dd/MM/yyyy HH:mm:ss";
                                 while (userWorkTimesRS.next()) {
-                                        DateTimeFormatter dtFormatter = DateTimeFormatter
-                                                        .ofPattern("EEEE dd/MM/yyyy HH:mm:ss");
+                                        DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern(pattern);
 
-                                        String startTime = GeneralUtils.formatDate("EEEE dd/MM/yyyy HH:mm:ss",
-                                                        userWorkTimesRS.getLong(1));
-                                        String endTime = GeneralUtils.formatDate("EEEE dd/MM/yyyy HH:mm:ss",
-                                                        userWorkTimesRS.getLong(2));
+                                        String startTime = GeneralUtils.formatDate(pattern, userWorkTimesRS.getLong(1));
+                                        String endTime = GeneralUtils.formatDate(pattern, userWorkTimesRS.getLong(2));
 
                                         CharSequence csStartTime = startTime;
                                         CharSequence csEndTime = endTime;

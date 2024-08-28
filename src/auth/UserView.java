@@ -205,6 +205,7 @@ public class UserView implements ActionListener {
                     breakStatusLabel.setText("Not on break");
                 }
 
+                con.close();
             } catch (Exception err) {
                 System.out.println("ERROR IN USER VIEW UPDATE UI: " + err);
             }
