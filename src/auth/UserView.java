@@ -18,6 +18,7 @@ import components.WTPanel;
 import components.WTWindow;
 import consts.Constants;
 import state.AppState;
+import utils.DatabaseUtils;
 import utils.GeneralUtils;
 import utils.UserViewUtils;
 
@@ -50,8 +51,7 @@ public class UserView implements ActionListener {
     public UserView() {
         userWindow.setTitle("Work Time - " + state.getFullName());
         try {
-            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
-                    Constants.DB_PASSWORD);
+            Connection con = DatabaseUtils.getConnection();
             PreparedStatement isWorkingPSTMT = con
                     .prepareStatement("SELECT * FROM work_times WHERE end IS NULL AND user_id = ?");
             isWorkingPSTMT.setInt(1, state.getUserId());
@@ -108,8 +108,7 @@ public class UserView implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
 
-            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
-                    Constants.DB_PASSWORD);
+            Connection con = DatabaseUtils.getConnection();
 
             if (e.getSource() == logoutBtn) {
                 int dialogResponse = JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?",

@@ -44,4 +44,9 @@ public final class Constants {
     public static final Pattern UN_PATTERN = Pattern.compile(Constants.UNAME_REGEX);
     // -----------------------------
 
+    // FORMATTER -------------------
+    public static final String HM_PATTERN = "HH:mm";
+    public static final String DMY_PATTERN = "dd/MM/yyyy";
+
+    // -----------------------------
 }

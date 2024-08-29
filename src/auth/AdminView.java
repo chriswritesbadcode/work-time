@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -16,9 +15,9 @@ import components.WTScrollPane;
 import components.WTSpacer;
 import components.WTWindow;
 import consts.Constants;
-import sections.AgentBreakReport;
-import sections.AgentWorkReport;
+import sections.AgentReport;
 import state.AppState;
+import utils.DatabaseUtils;
 
 public class AdminView implements ActionListener {
     AppState state = AppState.getInstance();
@@ -39,8 +38,8 @@ public class AdminView implements ActionListener {
 
         try {
 
-            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
-                    Constants.DB_PASSWORD);
+            Connection con = DatabaseUtils.getConnection();
+
             Statement getUserSTMT = con.createStatement();
             ResultSet usersRS = getUserSTMT.executeQuery("SELECT * FROM users WHERE role = 'agent'");
             if (!usersRS.isBeforeFirst()) {
@@ -90,8 +89,7 @@ public class AdminView implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         try {
             String userData = e.getActionCommand(); // GET AS STRING COS ITS STORED AS STRING
-            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
-                    Constants.DB_PASSWORD);
+            Connection con = DatabaseUtils.getConnection();
 
             if (e.getSource() == logoutButton) {
                 PreparedStatement logoutPSTMT = con.prepareStatement("DELETE FROM sessions WHERE user_id = ?");
@@ -107,9 +105,9 @@ public class AdminView implements ActionListener {
                 if (!userData.isEmpty()) {
                     String[] parts = userData.split(":");
                     if (parts[2].equals("w")) {
-                        new AgentWorkReport(userData);
+                        new AgentReport(userData, "work times");
                     } else if (parts[2].equals("b")) {
-                        new AgentBreakReport(userData);
+                        new AgentReport(userData, "breaks");
                     }
                 }
             }

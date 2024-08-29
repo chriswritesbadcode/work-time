@@ -1,12 +1,10 @@
 package utils;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.util.Date;
 
 import components.WTButton;
-import consts.Constants;
 import state.AppState;
 
 public class UserViewUtils {
@@ -18,8 +16,7 @@ public class UserViewUtils {
     public static void endBreak() {
         AppState state = AppState.getInstance();
         try {
-            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
-                    Constants.DB_PASSWORD);
+            Connection con = DatabaseUtils.getConnection();
             PreparedStatement endBreakPSTMT = con
                     .prepareStatement("UPDATE breaks SET end = ? WHERE end IS NULL AND user_id = ?");
             endBreakPSTMT.setLong(1, new Date().getTime());
@@ -36,8 +33,7 @@ public class UserViewUtils {
     public static void startBreak() {
         AppState state = AppState.getInstance();
         try {
-            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
-                    Constants.DB_PASSWORD);
+            Connection con = DatabaseUtils.getConnection();
             PreparedStatement startBreakPSTMT = con
                     .prepareStatement("INSERT INTO breaks(user_id, start, type) VALUES(?, ?, ?)");
             startBreakPSTMT.setInt(1, state.getUserId());

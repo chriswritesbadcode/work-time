@@ -51,8 +51,7 @@ public class SessionManager {
             String fileId = reader.readLine();
             long fileExpTime = Long.parseLong(reader.readLine());
 
-            Connection con = DriverManager.getConnection(Constants.DB_HOST, Constants.DB_USER,
-                    Constants.DB_PASSWORD);
+            Connection con = DatabaseUtils.getConnection();
             PreparedStatement sessionPSTMT = con.prepareStatement("SELECT * FROM sessions WHERE user_id = ?");
             sessionPSTMT.setString(1, fileId);
             ResultSet sessionData = sessionPSTMT.executeQuery();
