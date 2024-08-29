@@ -22,7 +22,7 @@ public class GeneralUtils {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
             @Override
             public boolean dispatchKeyEvent(KeyEvent e) {
-                if (e.getKeyChar() == '\n') {
+                if (e.getID() == KeyEvent.KEY_RELEASED && e.getKeyChar() == '\n') {
                     button.doClick();
                 }
                 return false;
