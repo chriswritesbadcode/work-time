@@ -16,7 +16,8 @@ import components.WTScrollPane;
 import components.WTSpacer;
 import components.WTWindow;
 import consts.Constants;
-import sections.UserReport;
+import sections.AgentBreakReport;
+import sections.AgentWorkReport;
 import state.AppState;
 
 public class AdminView implements ActionListener {
@@ -49,11 +50,18 @@ public class AdminView implements ActionListener {
                     WTPanel singleUserContainer = new WTPanel("box");
 
                     singleUserContainer.add(new WTLabel(usersRS.getString(4), false, "sm", "b", 'c'));
-                    WTButton userBtn = new WTButton("Details");
-                    userBtn.setActionCommand(usersRS.getString(1) + ":" + usersRS.getString(4)); // GET ID AS STRING ->
-                                                                                                 // FN EXPECTS STRING
-                    userBtn.addActionListener(this);
-                    singleUserContainer.add(userBtn);
+                    WTButton workTimesButton = new WTButton("Work Times");
+                    WTButton breaksButton = new WTButton("Breaks");
+
+                    // get id as string cos fn expects string
+                    workTimesButton.setActionCommand(usersRS.getString(1) + ":" + usersRS.getString(4) + ":w");
+                    breaksButton.setActionCommand(usersRS.getString(1) + ":" + usersRS.getString(4) + ":b");
+
+                    workTimesButton.addActionListener(this);
+                    breaksButton.addActionListener(this);
+
+                    singleUserContainer.add(workTimesButton);
+                    singleUserContainer.add(breaksButton);
 
                     contentPanel.add(singleUserContainer);
 
@@ -97,7 +105,12 @@ public class AdminView implements ActionListener {
                 new LoginPage();
             } else {
                 if (!userData.isEmpty()) {
-                    new UserReport(userData);
+                    String[] parts = userData.split(":");
+                    if (parts[2].equals("w")) {
+                        new AgentWorkReport(userData);
+                    } else if (parts[2].equals("b")) {
+                        new AgentBreakReport(userData);
+                    }
                 }
             }
             con.close();

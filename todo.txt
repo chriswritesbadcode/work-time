@@ -1,8 +1,7 @@
-on enter press many panels open instead of one
-add confirmation DO YOU REALLY WANT TO STOP WORKING?
-
 FOR USERS
 display their last 10/20/30 work, breaks some way
+
+abstract away db con string
 
 FOR ADMINS
 input field to select date from date to date to show: WORK TIME, BREAKS + TOTAL COMBINED
