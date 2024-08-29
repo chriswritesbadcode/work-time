@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Date;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import components.WTButton;
@@ -111,15 +112,20 @@ public class UserView implements ActionListener {
                     Constants.DB_PASSWORD);
 
             if (e.getSource() == logoutBtn) {
-                PreparedStatement logoutPSTMT = con.prepareStatement("DELETE FROM sessions WHERE user_id = ?");
-                logoutPSTMT.setInt(1, state.getUserId());
-                logoutPSTMT.executeUpdate();
+                int dialogResponse = JOptionPane.showConfirmDialog(null, "Are you sure you want to log out?",
+                        "Confirmation", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-                SessionManager.invalidateSession();
+                if (dialogResponse == JOptionPane.OK_OPTION) {
+                    PreparedStatement logoutPSTMT = con.prepareStatement("DELETE FROM sessions WHERE user_id = ?");
+                    logoutPSTMT.setInt(1, state.getUserId());
+                    logoutPSTMT.executeUpdate();
 
-                AppState.resetInstance();
-                userWindow.dispose();
-                new LoginPage();
+                    SessionManager.invalidateSession();
+
+                    AppState.resetInstance();
+                    userWindow.dispose();
+                    new LoginPage();
+                }
             } else if (e.getSource() == startWorkBtn) {
                 PreparedStatement startWorkPSTMT = con
                         .prepareStatement("INSERT INTO work_times(user_id, start) VALUES(?, ?)");

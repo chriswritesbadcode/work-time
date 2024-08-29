@@ -1,8 +1,9 @@
-ENTER SUBMTIS LOGIN/REGISTER
+on enter press many panels open instead of one
 add confirmation DO YOU REALLY WANT TO STOP WORKING?
 
 FOR USERS
-display and getBreaks(String type, int id) with pagination + an option to select date AND range 
+display their last 10/20/30 work, breaks some way
 
 FOR ADMINS
-all users in a scroll menu, clickable, and each opens a new window with this info (USE EXISTING getWorkTimes and getBreaks fn from before)
+input field to select date from date to date to show: WORK TIME, BREAKS + TOTAL COMBINED
+default ( on open ) just show last 10 with LIMIT 10 or more idk
