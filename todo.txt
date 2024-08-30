@@ -1,8 +1,11 @@
 FOR USERS
 display their last 10/20/30 work, breaks some way
 
-abstract away db con string
+button to submit data search in adminview
 
 FOR ADMINS
 input field to select date from date to date to show: WORK TIME, BREAKS + TOTAL COMBINED
 default ( on open ) just show last 10 with LIMIT 10 or more idk
+
+
+instead of sout, show error box message

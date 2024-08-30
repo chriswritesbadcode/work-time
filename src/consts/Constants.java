@@ -47,6 +47,11 @@ public final class Constants {
     // FORMATTER -------------------
     public static final String HM_PATTERN = "HH:mm";
     public static final String DMY_PATTERN = "dd/MM/yyyy";
-
     // -----------------------------
+
+    // ASC/DESC DROPDOWN -----------
+
+    public static final String[] orderResultsByChoices = { "Newest first", "Oldest First" };
+    // -----------------------------
+
 }

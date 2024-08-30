@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Base64;
@@ -15,6 +14,7 @@ import java.util.Date;
 
 import consts.Constants;
 import state.AppState;
+import utils.DatabaseUtils;
 
 public class SessionManager {
 
