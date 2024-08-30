@@ -15,7 +15,7 @@ public final class Constants {
     public static final String DB_PASSWORD = System.getenv("WTDB_PASSWORD");
 
     public static final int DEF_WINDOW_W = 600;
-    public static final int DEF_WINDOW_H = 400;
+    public static final int DEF_WINDOW_H = 300;
 
     public static final int DEF_INPUT_WIDTH = 200;
     public static final int DEF_INPUT_HEIGHT = 30;

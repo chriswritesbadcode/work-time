@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -22,6 +21,7 @@ import components.WTLabel;
 import components.WTOptionPane;
 import components.WTPanel;
 import components.WTScrollPane;
+import components.WTSpacer;
 import components.WTSpinner;
 import components.WTWindow;
 import consts.Constants;
@@ -42,14 +42,16 @@ public class AgentReport implements ActionListener {
 
         WTLabel reportHeading = new WTLabel("", true, "lg", "b", 'c');
 
-        WTLabel rangeLabel = new WTLabel("Amount of items to display: ", false, "sm", "b", 'c');
+        WTLabel rangeLabel = new WTLabel("(amount of items to display)", false, "sm", "b", 'c');
         JFormattedTextField rangeTextField = new JFormattedTextField(GeneralUtils.getNumberFormatter());
         JComboBox<String> dropDownBox = new JComboBox<String>(Constants.orderResultsByChoices);
         WTButton submitSearchBtn = new WTButton("Search");
         WTLabel totalDurationLabel = new WTLabel("", false, "sm", "b", 'c');
 
         WTSpinner startDateChooser = new WTSpinner();
+        WTLabel fromDateLabel = new WTLabel("(from date)", false, "sm", "b", 'c');
         WTSpinner endDateChooser = new WTSpinner();
+        WTLabel toDateLabel = new WTLabel("(to date)", false, "sm", "b", 'c');
         WTSpinner.DateEditor startEditor = new WTSpinner.DateEditor(startDateChooser, "dd-MM-yyyy");
         WTSpinner.DateEditor endEditor = new WTSpinner.DateEditor(endDateChooser, "dd-MM-yyyy");
 
@@ -76,19 +78,26 @@ public class AgentReport implements ActionListener {
 
                 reportPanel.add(reportHeading);
 
-                reportPanel.add(rangeLabel);
+                reportPanel.add(new WTSpacer(new Dimension(Constants.SMALL_Y_SPACER_WIDTH,
+                                Constants.SMALL_Y_SPACER_HEIGHT)));
                 reportPanel.add(rangeTextField);
-
-                rangeTextField.setValue(12);
+                reportPanel.add(rangeLabel);
+                reportPanel.add(new WTSpacer(new Dimension(Constants.SMALL_Y_SPACER_WIDTH,
+                                Constants.SMALL_Y_SPACER_HEIGHT)));
+                rangeTextField.setValue(15);
                 rangeTextField.setMaximumSize(new Dimension(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT));
                 submitSearchBtn.addActionListener(this);
 
                 dropDownBox.setVisible(true);
                 dropDownBox.setMaximumSize(new Dimension(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT));
                 reportPanel.add(dropDownBox);
-                reportPanel.add(submitSearchBtn);
+
                 reportPanel.add(startDateChooser);
+                reportPanel.add(fromDateLabel);
                 reportPanel.add(endDateChooser);
+                reportPanel.add(toDateLabel);
+
+                reportPanel.add(submitSearchBtn);
                 reportPanel.add(totalDurationLabel);
 
                 showData();

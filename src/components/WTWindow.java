@@ -11,7 +11,7 @@ public class WTWindow extends JFrame {
         if (centered) {
             this.setLocationRelativeTo(null);
         }
-        this.setResizable(false);
+        // this.setResizable(false);
         this.setDefaultCloseOperation(closeAllOnExit ? WTWindow.EXIT_ON_CLOSE : WTWindow.DISPOSE_ON_CLOSE);
         ImageIcon icon = new ImageIcon("src/resources/favico.png");
         this.setIconImage(icon.getImage());
