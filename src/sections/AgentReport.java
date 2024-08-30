@@ -8,8 +8,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -19,6 +22,7 @@ import components.WTLabel;
 import components.WTOptionPane;
 import components.WTPanel;
 import components.WTScrollPane;
+import components.WTSpinner;
 import components.WTWindow;
 import consts.Constants;
 import utils.DatabaseUtils;
@@ -44,6 +48,11 @@ public class AgentReport implements ActionListener {
         WTButton submitSearchBtn = new WTButton("Search");
         WTLabel totalDurationLabel = new WTLabel("", false, "sm", "b", 'c');
 
+        WTSpinner startDateChooser = new WTSpinner();
+        WTSpinner endDateChooser = new WTSpinner();
+        WTSpinner.DateEditor startEditor = new WTSpinner.DateEditor(startDateChooser, "dd-MM-yyyy");
+        WTSpinner.DateEditor endEditor = new WTSpinner.DateEditor(endDateChooser, "dd-MM-yyyy");
+
         WTLabel errorLabel = new WTLabel("", false, "md", "b", 'c');
 
         public AgentReport(String userData, String reportType) {
@@ -54,6 +63,13 @@ public class AgentReport implements ActionListener {
                 this.reportType = reportType;
                 this.userId = Integer.parseInt(parts[0]);
                 this.fullName = parts[1];
+
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DATE, -7);
+                startDateChooser.setEditor(startEditor);
+                endDateChooser.setEditor(endEditor);
+                startDateChooser.setValue(new Date(cal.getTimeInMillis()));
+                endDateChooser.setValue(new Date());
 
                 reportWindow.setTitle("Agent " + reportType + " report - " + fullName);
                 reportHeading.setText(fullName + "'s " + reportType);
@@ -72,6 +88,8 @@ public class AgentReport implements ActionListener {
                 reportPanel.add(dropDownBox);
                 reportPanel.add(submitSearchBtn);
                 reportPanel.add(totalDurationLabel);
+                reportPanel.add(startDateChooser);
+                reportPanel.add(endDateChooser);
 
                 showData();
 
@@ -92,8 +110,17 @@ public class AgentReport implements ActionListener {
 
         private ResultSet getData(Connection con) throws SQLException {
 
+                Date startDate = (Date) startDateChooser.getValue();
+                Date endDate = (Date) endDateChooser.getValue();
+
                 String endOfQueryString = "WHERE user_id = "
                                 + userId
+                                + " AND "
+                                + "start >= "
+                                + startDate.getTime()
+                                + " AND "
+                                + "end <= "
+                                + endDate.getTime()
                                 + " ORDER BY start "
                                 + (dropDownBox.getSelectedItem()
                                                 .toString()
@@ -166,7 +193,7 @@ public class AgentReport implements ActionListener {
                                                         "md", "b",
                                                         'c'));
 
-                                        reportChunkPanel.add(`
+                                        reportChunkPanel.add(
                                                         new WTLabel(durationStr, false, "sm", "b", 'c'));
                                         contentPanel.add(reportChunkPanel);
                                 }
