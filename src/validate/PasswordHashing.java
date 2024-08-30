@@ -8,6 +8,8 @@ import java.util.Base64;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
+import components.WTOptionPane;
+
 public class PasswordHashing {
     private static final int ITERATIONS = 10000;
     private static final int KEY_LENGTH = 256;
@@ -38,7 +40,7 @@ public class PasswordHashing {
         try {
             return hashPassword(inputPassword, salt).equals(storedHash);
         } catch (Exception err) {
-            System.out.println("ERROR IN PASSWORD HASHING: " + err);
+            WTOptionPane.showMessageBox("Error in password hashing: " + err);
             return false;
         }
     }

@@ -2,9 +2,11 @@ package utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Date;
 
 import components.WTButton;
+import components.WTOptionPane;
 import state.AppState;
 
 public class UserViewUtils {
@@ -25,8 +27,8 @@ public class UserViewUtils {
             endBreakPSTMT.executeUpdate();
 
             con.close();
-        } catch (Exception err) {
-            System.out.println("ERROR IN USER VIEW END BREAK: " + err);
+        } catch (SQLException err) {
+            WTOptionPane.showMessageBox("Error in user view end break: " + err);
         }
     }
 
@@ -42,8 +44,9 @@ public class UserViewUtils {
             startBreakPSTMT.execute();
 
             con.close();
-        } catch (Exception err) {
-            System.out.println("ERROR IN USER VIEW START BREAK: " + err);
+        } catch (SQLException err) {
+            WTOptionPane.showMessageBox("Error in user view start break: " + err);
+
         }
     }
 

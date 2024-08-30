@@ -10,6 +10,7 @@ import state.AppState;
 import utils.GeneralUtils;
 import components.WTButton;
 import components.WTLabel;
+import components.WTOptionPane;
 import components.WTPanel;
 import components.WTPasswordField;
 import components.WTSpacer;
@@ -132,7 +133,7 @@ public class LoginPage implements ActionListener {
 
                     con.close();
                 } catch (Exception err) {
-                    System.out.println("ERROR IN LOGIN PAGE: " + err);
+                    WTOptionPane.showMessageBox("Error in login page: " + err);
                 }
 
             }

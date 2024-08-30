@@ -81,8 +81,8 @@ public class UserView implements ActionListener {
             }
 
             con.close();
-        } catch (Exception err) {
-            System.out.println("ERROR IN USERVIEW BEGINNING: " + err);
+        } catch (SQLException err) {
+            WTOptionPane.showMessageBox("Error in userview beginning" + err);
         }
 
         mainPanel.add(userViewHeading);
@@ -146,8 +146,6 @@ public class UserView implements ActionListener {
                     WTOptionPane.showMessageBox("ERROR, it says you haven't started working yet!?");
                 } else {
                     currWorkDurRS.next();
-                    System.out.println(
-                            "Curr work dur: " + Long.toString(new Date().getTime() - currWorkDurRS.getLong(1)));
                     if (new Date().getTime() - currWorkDurRS.getLong(1) < Constants.WARN_IF_WORKING_LESS_THAN) {
                         int dialogResponse = WTOptionPane.showConfirmDialog(
                                 "You've worked less than 7h, are you sure you want to stop working?", "Confirmation");
@@ -186,7 +184,7 @@ public class UserView implements ActionListener {
 
             con.close();
         } catch (Exception err) {
-            System.out.println("ERROR IN USER VIEW ACTION PERFORMED: " + err);
+            WTOptionPane.showMessageBox("Error in user view action performed: " + err);
         }
         getNewData();
     }
@@ -227,8 +225,8 @@ public class UserView implements ActionListener {
                 }
 
                 con.close();
-            } catch (Exception err) {
-                System.out.println("ERROR IN USER VIEW UPDATE UI: " + err);
+            } catch (SQLException err) {
+                WTOptionPane.showMessageBox("Error in user view update ui: " + err);
             }
 
             if (state.getIsWorking()) {

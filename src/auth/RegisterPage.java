@@ -11,6 +11,7 @@ import java.sql.Statement;
 
 import components.WTButton;
 import components.WTLabel;
+import components.WTOptionPane;
 import components.WTPanel;
 import components.WTPasswordField;
 import components.WTSpacer;
@@ -124,7 +125,7 @@ public class RegisterPage implements ActionListener {
                     }
                     con.close();
                 } catch (Exception err) {
-                    System.out.println("ERROR IN REGISTER PAGE: " + err);
+                    WTOptionPane.showMessageBox("Error in register page: " + err);
                 }
             }
         } else if (e.getSource() == toLoginButton) {

@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.util.Base64;
 import java.util.Date;
 
+import components.WTOptionPane;
 import consts.Constants;
 import state.AppState;
 import utils.DatabaseUtils;
@@ -88,7 +89,7 @@ public class SessionManager {
             con.close();
             return true;
         } catch (Exception err) {
-            System.out.println("ERROR IN SESSION MANAGER: " + err);
+            WTOptionPane.showMessageBox("Error in session manager" + err);
             return false;
         }
     }

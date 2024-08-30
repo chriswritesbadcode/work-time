@@ -16,6 +16,7 @@ import javax.swing.JFormattedTextField;
 
 import components.WTButton;
 import components.WTLabel;
+import components.WTOptionPane;
 import components.WTPanel;
 import components.WTScrollPane;
 import components.WTWindow;
@@ -170,7 +171,7 @@ public class AgentReport implements ActionListener {
                         }
                         con.close();
                 } catch (SQLException err) {
-                        System.out.println("ERROR IN GET AGENT REPORT - CUSTOM DATA FN: " + err);
+                        WTOptionPane.showMessageBox("Error in get agent report - custom data fn: " + err);
                 }
                 contentPanel.revalidate();
                 contentPanel.repaint();

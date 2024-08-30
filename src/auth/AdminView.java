@@ -6,10 +6,12 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import components.WTButton;
 import components.WTLabel;
+import components.WTOptionPane;
 import components.WTPanel;
 import components.WTScrollPane;
 import components.WTSpacer;
@@ -67,8 +69,8 @@ public class AdminView implements ActionListener {
                 }
             }
             con.close();
-        } catch (Exception err) {
-            System.out.println("ERROR IN ADMINVIEW GET USERS: " + err);
+        } catch (SQLException err) {
+            WTOptionPane.showMessageBox("ERROR IN ADMINVIEW GET USERS: " + err);
         }
 
         adminPanel.add(contentPanel);
@@ -113,7 +115,7 @@ public class AdminView implements ActionListener {
             }
             con.close();
         } catch (Exception err) {
-            System.out.println("ERROR IN ADMIN VIEW - ACTION PERFORMED OVERRIDE: " + err);
+            WTOptionPane.showMessageBox("ERROR IN ADMIN VIEW - ACTION PERFORMED OVERRIDE: " + err);
         }
 
     }
