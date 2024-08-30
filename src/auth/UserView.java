@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 
@@ -14,6 +15,7 @@ import javax.swing.SwingUtilities;
 
 import components.WTButton;
 import components.WTLabel;
+import components.WTOptionPane;
 import components.WTPanel;
 import components.WTWindow;
 import consts.Constants;
@@ -45,6 +47,7 @@ public class UserView implements ActionListener {
 
     WTLabel workStatusLabel = new WTLabel("Not working", false, "sm", "bb", 'c');
     WTLabel breakStatusLabel = new WTLabel("Not on break", false, "sm", "bb", 'c');
+    WTLabel last30workLabel = new WTLabel("Worked 10h, 20m last 30d", false, "sm", "b", 'c');
 
     WTButton logoutBtn = new WTButton("Logout");
 
@@ -85,7 +88,7 @@ public class UserView implements ActionListener {
         mainPanel.add(userViewHeading);
         mainPanel.add(fullNameLabel);
 
-        updateUI();
+        getNewData();
 
         mainPanel.add(contentPanel);
         mainPanel.add(logoutBtn);
@@ -135,13 +138,26 @@ public class UserView implements ActionListener {
                 state.setIsWorking(true);
 
             } else if (e.getSource() == endWorkBtn) {
-                PreparedStatement endWorkPSTMT = con
-                        .prepareStatement("UPDATE work_times SET end = ? WHERE end IS NULL AND user_id = ?");
-                endWorkPSTMT.setLong(1, new Date().getTime());
-                endWorkPSTMT.setInt(2, state.getUserId());
-                endWorkPSTMT.executeUpdate();
+                Statement currWorkDurationSTMT = con.createStatement();
+                ResultSet currWorkDurRS = currWorkDurationSTMT.executeQuery(
+                        "SELECT start, end FROM work_times WHERE end IS NULL AND user_id = " + state.getUserId());
 
-                state.setIsWorking(false);
+                if (!currWorkDurRS.isBeforeFirst()) {
+                    WTOptionPane.showMessageBox("ERROR, it says you haven't started working yet!?");
+                } else {
+                    currWorkDurRS.next();
+                    System.out.println(
+                            "Curr work dur: " + Long.toString(new Date().getTime() - currWorkDurRS.getLong(1)));
+                    if (new Date().getTime() - currWorkDurRS.getLong(1) < Constants.WARN_IF_WORKING_LESS_THAN) {
+                        int dialogResponse = WTOptionPane.showConfirmDialog(
+                                "You've worked less than 7h, are you sure you want to stop working?", "Confirmation");
+                        if (dialogResponse == WTOptionPane.OK_OPTION) {
+                            stopUserWorking(con);
+                        }
+                    } else {
+                        stopUserWorking(con);
+                    }
+                }
 
             } else if (e.getSource() == startLunchBtn) {
                 state.setIsOnBreak(true);
@@ -172,10 +188,10 @@ public class UserView implements ActionListener {
         } catch (Exception err) {
             System.out.println("ERROR IN USER VIEW ACTION PERFORMED: " + err);
         }
-        updateUI();
+        getNewData();
     }
 
-    private void updateUI() {
+    private void getNewData() {
         SwingUtilities.invokeLater(() -> {
             contentPanel.removeAll();
 
@@ -273,6 +289,7 @@ public class UserView implements ActionListener {
 
             statusPanel.add(workStatusLabel);
             statusPanel.add(breakStatusLabel);
+            statusPanel.add(last30workLabel);
 
             contentPanel.add(statusPanel);
             contentPanel.repaint();
@@ -280,4 +297,14 @@ public class UserView implements ActionListener {
         });
     }
 
+    private void stopUserWorking(Connection con) throws SQLException {
+        PreparedStatement endWorkPSTMT = con
+                .prepareStatement(
+                        "UPDATE work_times SET end = ? WHERE end IS NULL AND user_id = ?");
+        endWorkPSTMT.setLong(1, new Date().getTime());
+        endWorkPSTMT.setInt(2, state.getUserId());
+        endWorkPSTMT.executeUpdate();
+
+        state.setIsWorking(false);
+    }
 }

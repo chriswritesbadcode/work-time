@@ -47,15 +47,6 @@ public class AgentReport implements ActionListener {
         public AgentReport(String userData, String reportType) {
                 // userdata = id:fullName:reportTypeChar
                 // reportType = breaks or work times
-                String[] parts = userData.split(":");
-
-                this.userData = userData;
-                this.reportType = reportType;
-                this.userId = Integer.parseInt(parts[0]);
-                this.fullName = parts[1];
-                rangeTextField.setValue(12);
-                rangeTextField.setMaximumSize(new Dimension(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT));
-
                 reportWindow.setTitle("Agent " + reportType + " report - " + fullName);
                 reportHeading.setText(fullName + "'s " + reportType);
 
@@ -63,13 +54,21 @@ public class AgentReport implements ActionListener {
 
                 reportPanel.add(rangeLabel);
                 reportPanel.add(rangeTextField);
+
+                String[] parts = userData.split(":");
+                this.userData = userData;
+                this.reportType = reportType;
+                this.userId = Integer.parseInt(parts[0]);
+                this.fullName = parts[1];
+
+                rangeTextField.setValue(12);
+                rangeTextField.setMaximumSize(new Dimension(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT));
+                submitSearchBtn.addActionListener(this);
+
                 dropDownBox.setVisible(true);
                 dropDownBox.setMaximumSize(new Dimension(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT));
-                dropDownBox.addActionListener(this);
-
                 reportPanel.add(dropDownBox);
                 reportPanel.add(submitSearchBtn);
-                submitSearchBtn.addActionListener(this);
 
                 showData();
 
@@ -83,9 +82,6 @@ public class AgentReport implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-                if (e.getSource() == dropDownBox) {
-                        System.out.println(dropDownBox.getSelectedItem().toString());
-                }
                 if (e.getSource() == submitSearchBtn) {
                         showData();
                 }

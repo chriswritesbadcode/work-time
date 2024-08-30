@@ -54,4 +54,6 @@ public final class Constants {
     public static final String[] orderResultsByChoices = { "Newest first", "Oldest First" };
     // -----------------------------
 
+    public static final long WARN_IF_WORKING_LESS_THAN = 25200000; // 7H in MS
+
 }
