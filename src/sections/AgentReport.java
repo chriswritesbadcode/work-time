@@ -100,7 +100,7 @@ public class AgentReport implements ActionListener {
                 reportPanel.add(submitSearchBtn);
                 reportPanel.add(totalDurationLabel);
 
-                showData();
+                getData();
 
                 reportPanel.add(errorLabel);
                 reportPanel.add(contentPanel);
@@ -113,7 +113,7 @@ public class AgentReport implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == submitSearchBtn) {
-                        showData();
+                        getData();
                 }
         }
 
@@ -152,7 +152,7 @@ public class AgentReport implements ActionListener {
                 return reportRS;
         }
 
-        private void showData() {
+        private void getData() {
                 contentPanel.removeAll();
                 try {
                         Connection con = DatabaseUtils.getConnection();
@@ -164,7 +164,12 @@ public class AgentReport implements ActionListener {
                         } else {
                                 DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern(Constants.HM_PATTERN);
                                 long totalDuration = 0;
+
+                                long lunchDuration = 0;
+                                long otherDuration = 0;
+
                                 int nItems = 0;
+
                                 while (reportRS.next()) {
 
                                         String startTime = GeneralUtils.formatDate(Constants.HM_PATTERN,
@@ -182,7 +187,15 @@ public class AgentReport implements ActionListener {
                                         long days = duration.toDays();
                                         long hours = duration.toHours() % 24;
                                         long minutes = duration.toMinutes() % 60;
-                                        totalDuration += duration.toMillis();
+                                        if (reportType.equals("work times")) {
+                                                totalDuration += duration.toMillis();
+                                        } else {
+                                                if (reportRS.getString(3).equals("lunch")) {
+                                                        lunchDuration += duration.toMillis();
+                                                } else {
+                                                        otherDuration += duration.toMillis();
+                                                }
+                                        }
 
                                         String durationStr = (days != 0 ? days + "d, " : "") + hours + "h, "
                                                         + minutes + "m";
@@ -209,10 +222,26 @@ public class AgentReport implements ActionListener {
                                         nItems++;
                                 }
 
-                                long hourDur = totalDuration / 1000 / 3600;
-                                long minDur = (totalDuration / 1000 % 3600) / 60;
-                                totalDurationLabel.setText("Total: " + hourDur + "h, " + minDur + "m" + " (from "
-                                                + nItems + " items)");
+                                if (reportType.equals("work times")) {
+                                        long hourDur = totalDuration / 1000 / 3600;
+                                        long minDur = (totalDuration / 1000 % 3600) / 60;
+                                        totalDurationLabel
+                                                        .setText("Total: " + hourDur + "h, " + minDur + "m" + " (from "
+                                                                        + nItems + " items)");
+                                } else {
+                                        long lunchHourDur = lunchDuration / 1000 / 3600;
+                                        long lunchMinDur = (lunchDuration / 1000 % 3600) / 60;
+
+                                        long otherHourDur = otherDuration / 1000 / 3600;
+                                        long otherMinDur = (otherDuration / 1000 % 3600) / 60;
+
+                                        totalDurationLabel
+                                                        .setText("Lunch: " + lunchHourDur + "h, " + lunchMinDur
+                                                                        + "m" + " | " + "Other: " + otherHourDur + "h, "
+                                                                        + otherMinDur + "m" + " (from "
+                                                                        + nItems + " items)");
+
+                                }
 
                         }
                         con.close();

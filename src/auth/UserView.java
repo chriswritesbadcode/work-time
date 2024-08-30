@@ -8,6 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
@@ -47,7 +51,8 @@ public class UserView implements ActionListener {
 
     WTLabel workStatusLabel = new WTLabel("Not working", false, "sm", "bb", 'c');
     WTLabel breakStatusLabel = new WTLabel("Not on break", false, "sm", "bb", 'c');
-    WTLabel last30workLabel = new WTLabel("Worked 10h, 20m last 30d", false, "sm", "b", 'c');
+    WTLabel todaysBreaksLabel = new WTLabel("", false, "sm", "b", 'c');
+    WTLabel errorLabel = new WTLabel("", false, "sm", "b", 'c');
 
     WTButton logoutBtn = new WTButton("Logout");
 
@@ -150,10 +155,10 @@ public class UserView implements ActionListener {
                         int dialogResponse = WTOptionPane.showConfirmDialog(
                                 "You've worked less than 7h, are you sure you want to stop working?", "Confirmation");
                         if (dialogResponse == WTOptionPane.OK_OPTION) {
-                            stopUserWorking(con);
+                            UserViewUtils.stopUserWorking(con);
                         }
                     } else {
-                        stopUserWorking(con);
+                        UserViewUtils.stopUserWorking(con);
                     }
                 }
 
@@ -200,12 +205,23 @@ public class UserView implements ActionListener {
 
                 Statement isWorkingSTMT = con.createStatement();
                 Statement isOnBreakSTMT = con.createStatement();
+                Statement lastWorkTImesSTMT = con.createStatement();
 
                 ResultSet isWorkingData = isWorkingSTMT
                         .executeQuery("SELECT * FROM work_times WHERE end IS NULL AND user_id = " + state.getUserId());
 
                 ResultSet isOnBreakData = isOnBreakSTMT
                         .executeQuery("SELECT * FROM breaks WHERE end IS NULL AND user_id = " + state.getUserId());
+
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.HOUR_OF_DAY, -12);
+
+                Date twelveAgo = new Date(cal.getTimeInMillis());
+
+                ResultSet todaysBreaksRS = lastWorkTImesSTMT
+                        .executeQuery("SELECT start, end FROM breaks WHERE user_id = "
+                                + state.getUserId() + " AND start >= " + twelveAgo.getTime() + " AND "
+                                + "end IS NOT NULL" + " ORDER BY start DESC");
 
                 if (isWorkingData.isBeforeFirst()) {
                     isWorkingData.next();
@@ -224,85 +240,101 @@ public class UserView implements ActionListener {
                     breakStatusLabel.setText("Not on break");
                 }
 
-                con.close();
-            } catch (SQLException err) {
-                WTOptionPane.showMessageBox("Error in user view update ui: " + err);
-            }
+                if (state.getIsWorking()) {
+                    contentPanel.add(endWorkBtn);
 
-            if (state.getIsWorking()) {
-                contentPanel.add(endWorkBtn);
+                    startLunchBtn.setEnabled(true);
+                    startToiletBtn.setEnabled(true);
+                    startOtherBreakBtn.setEnabled(true);
+                    logoutBtn.setEnabled(false);
 
-                startLunchBtn.setEnabled(true);
-                startToiletBtn.setEnabled(true);
-                startOtherBreakBtn.setEnabled(true);
-                logoutBtn.setEnabled(false);
+                    if (state.getIsOnBreak()) {
+                        if (state.getBreakType().equals("lunch")) {
+                            contentPanel.add(endLunchBtn);
 
-                if (state.getIsOnBreak()) {
-                    if (state.getBreakType().equals("lunch")) {
-                        contentPanel.add(endLunchBtn);
+                            contentPanel.add(startToiletBtn);
+                            contentPanel.add(startOtherBreakBtn);
 
+                            UserViewUtils.disableButtons("toilet,other,work", startLunchBtn, startToiletBtn,
+                                    startOtherBreakBtn, endWorkBtn);
+                        } else if (state.getBreakType().equals("toilet")) {
+                            contentPanel.add(startLunchBtn);
+                            contentPanel.add(endToiletBtn);
+                            contentPanel.add(startOtherBreakBtn);
+
+                            UserViewUtils.disableButtons("lunch,other,work", startLunchBtn, startToiletBtn,
+                                    startOtherBreakBtn,
+                                    endWorkBtn);
+                        } else if (state.getBreakType().equals("other")) {
+                            contentPanel.add(startLunchBtn);
+                            contentPanel.add(startToiletBtn);
+                            contentPanel.add(endOtherBreakBtn);
+
+                            UserViewUtils.disableButtons("lunch,toilet,other", startLunchBtn, startToiletBtn,
+                                    startOtherBreakBtn, endWorkBtn);
+
+                            UserViewUtils.disableButtons("toilet,lunch,work", startLunchBtn, startToiletBtn,
+                                    startOtherBreakBtn, endWorkBtn);
+                        }
+                    } else {
+                        contentPanel.add(startLunchBtn);
                         contentPanel.add(startToiletBtn);
                         contentPanel.add(startOtherBreakBtn);
 
-                        UserViewUtils.disableButtons("toilet,other,work", startLunchBtn, startToiletBtn,
-                                startOtherBreakBtn, endWorkBtn);
-                    } else if (state.getBreakType().equals("toilet")) {
-                        contentPanel.add(startLunchBtn);
-                        contentPanel.add(endToiletBtn);
-                        contentPanel.add(startOtherBreakBtn);
+                        endWorkBtn.setEnabled(true);
 
-                        UserViewUtils.disableButtons("lunch,other,work", startLunchBtn, startToiletBtn,
-                                startOtherBreakBtn,
-                                endWorkBtn);
-                    } else if (state.getBreakType().equals("other")) {
-                        contentPanel.add(startLunchBtn);
-                        contentPanel.add(startToiletBtn);
-                        contentPanel.add(endOtherBreakBtn);
-
-                        UserViewUtils.disableButtons("lunch,toilet,other", startLunchBtn, startToiletBtn,
-                                startOtherBreakBtn, endWorkBtn);
-
-                        UserViewUtils.disableButtons("toilet,lunch,work", startLunchBtn, startToiletBtn,
-                                startOtherBreakBtn, endWorkBtn);
                     }
                 } else {
+                    contentPanel.add(startWorkBtn);
+
                     contentPanel.add(startLunchBtn);
                     contentPanel.add(startToiletBtn);
                     contentPanel.add(startOtherBreakBtn);
 
-                    endWorkBtn.setEnabled(true);
-
+                    UserViewUtils.disableButtons("lunch,toilet,other", startLunchBtn, startToiletBtn,
+                            startOtherBreakBtn,
+                            endWorkBtn);
+                    logoutBtn.setEnabled(true);
                 }
-            } else {
-                contentPanel.add(startWorkBtn);
 
-                contentPanel.add(startLunchBtn);
-                contentPanel.add(startToiletBtn);
-                contentPanel.add(startOtherBreakBtn);
+                long todaysBreaksDur = 0;
+                DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern(Constants.HM_PATTERN);
 
-                UserViewUtils.disableButtons("lunch,toilet,other", startLunchBtn, startToiletBtn, startOtherBreakBtn,
-                        endWorkBtn);
-                logoutBtn.setEnabled(true);
+                while (todaysBreaksRS.next()) {
+                    String startTime = GeneralUtils.formatDate(Constants.HM_PATTERN, todaysBreaksRS.getLong(1));
+                    String endTime = GeneralUtils.formatDate(Constants.HM_PATTERN, todaysBreaksRS.getLong(2));
+
+                    CharSequence csStartTime = startTime;
+                    CharSequence csEndTime = endTime;
+
+                    Duration duration = Duration.between(LocalTime.parse(csStartTime, dtFormatter),
+                            LocalTime.parse(csEndTime, dtFormatter));
+
+                    // long days = duration.toDays();
+                    // long hours = duration.toHours() % 24;
+                    // long minutes = duration.toMinutes() % 60;
+
+                    todaysBreaksDur += duration.toMillis();
+                }
+
+                long tdyBrHrDur = todaysBreaksDur / 1000 / 3600;
+                long tdyBrMiDur = (todaysBreaksDur / 1000 % 3600) / 60;
+
+                todaysBreaksLabel.setText("Today's breaks duration: " + tdyBrHrDur + "h, " + tdyBrMiDur + "m");
+
+                statusPanel.add(workStatusLabel);
+                statusPanel.add(breakStatusLabel);
+                statusPanel.add(todaysBreaksLabel);
+                statusPanel.add(errorLabel);
+                contentPanel.add(statusPanel);
+
+                contentPanel.repaint();
+                contentPanel.revalidate();
+                con.close();
+            } catch (SQLException err) {
+                WTOptionPane.showMessageBox("Error in user view update ui: " + err);
             }
-
-            statusPanel.add(workStatusLabel);
-            statusPanel.add(breakStatusLabel);
-            statusPanel.add(last30workLabel);
-
-            contentPanel.add(statusPanel);
-            contentPanel.repaint();
-            contentPanel.revalidate();
         });
     }
 
-    private void stopUserWorking(Connection con) throws SQLException {
-        PreparedStatement endWorkPSTMT = con
-                .prepareStatement(
-                        "UPDATE work_times SET end = ? WHERE end IS NULL AND user_id = ?");
-        endWorkPSTMT.setLong(1, new Date().getTime());
-        endWorkPSTMT.setInt(2, state.getUserId());
-        endWorkPSTMT.executeUpdate();
-
-        state.setIsWorking(false);
-    }
 }

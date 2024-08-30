@@ -18,6 +18,8 @@ import components.WTTextField;
 import components.WTWindow;
 import validate.InputValidator;
 import validate.PasswordHashing;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 
 public class LoginPage implements ActionListener {
 
@@ -42,6 +44,8 @@ public class LoginPage implements ActionListener {
 
     WTLabel errorLabel = new WTLabel("", false, "md", "r", 'c');
 
+    KeyEventDispatcher enterDispatcher = GeneralUtils.addListenerForEnter(loginBtn);
+
     public LoginPage() {
         loginPanel.add(loginHeading);
 
@@ -61,9 +65,6 @@ public class LoginPage implements ActionListener {
 
         loginWindow.add(loginPanel);
         loginWindow.setVisible(true);
-
-        GeneralUtils.addListenerForEnter(loginBtn);
-
     }
 
     @Override
@@ -124,6 +125,8 @@ public class LoginPage implements ActionListener {
                                 } else if (state.getRole().equals("admin")) {
                                     new AdminView();
                                 }
+                                KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                                        .removeKeyEventDispatcher(enterDispatcher);
                                 loginWindow.dispose();
                             } else {
                                 errorLabel.setText("Incorrect credentials");
@@ -139,6 +142,9 @@ public class LoginPage implements ActionListener {
             }
 
         } else if (e.getSource() == toRegisterButton) {
+            KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                    .removeKeyEventDispatcher(enterDispatcher);
+
             loginWindow.dispose();
             new RegisterPage();
         }

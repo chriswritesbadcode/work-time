@@ -14,6 +14,9 @@ public class WTPanel extends JPanel {
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         } else if (layout.equals("")) {
             this.setLayout(new WrapLayout(WrapLayout.CENTER, 15, 20));
+        } else if (layout.equals("boxa")) {
+            this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+
         }
         this.setBackground(new Color(133, 173, 173));
     }

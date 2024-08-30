@@ -75,4 +75,16 @@ public class UserViewUtils {
 
     }
 
+    public static void stopUserWorking(Connection con) throws SQLException {
+        AppState state = AppState.getInstance();
+        PreparedStatement endWorkPSTMT = con
+                .prepareStatement(
+                        "UPDATE work_times SET end = ? WHERE end IS NULL AND user_id = ?");
+        endWorkPSTMT.setLong(1, new Date().getTime());
+        endWorkPSTMT.setInt(2, state.getUserId());
+        endWorkPSTMT.executeUpdate();
+
+        state.setIsWorking(false);
+    }
+
 }

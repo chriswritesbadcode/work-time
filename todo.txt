@@ -1,10 +1,5 @@
-FOR USERS
-display their last 10/20/30 work, breaks some way
+display users last 10/20/30 work, breaks some way
 
 when changing logins 2 windows pop up
 
-FOR ADMINS
-show TOTAL COMBINED of the amount that was selected with the input
-
-
-fancier font
+btns color

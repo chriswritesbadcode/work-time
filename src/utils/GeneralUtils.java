@@ -21,8 +21,8 @@ public class GeneralUtils {
         return formatter.format(time);
     }
 
-    public static void addListenerForEnter(WTButton button) {
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+    public static KeyEventDispatcher addListenerForEnter(WTButton button) {
+        KeyEventDispatcher enterDispatcher = new KeyEventDispatcher() {
             @Override
             public boolean dispatchKeyEvent(KeyEvent e) {
                 if (e.getID() == KeyEvent.KEY_RELEASED && e.getKeyChar() == '\n') {
@@ -30,7 +30,9 @@ public class GeneralUtils {
                 }
                 return false;
             }
-        });
+        };
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(enterDispatcher);
+        return enterDispatcher;
     }
 
     public static String capitalizeString(String string) {

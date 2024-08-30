@@ -22,6 +22,8 @@ import state.AppState;
 import utils.GeneralUtils;
 import validate.InputValidator;
 import validate.PasswordHashing;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 
 public class RegisterPage implements ActionListener {
 
@@ -44,6 +46,7 @@ public class RegisterPage implements ActionListener {
     WTButton toLoginButton = new WTButton("Login to an existing account");
 
     WTLabel errorLabel = new WTLabel("", false, "sm", "r", 'c');
+    KeyEventDispatcher enterDispatcher = GeneralUtils.addListenerForEnter(registerButton);
 
     public RegisterPage() {
 
@@ -67,8 +70,6 @@ public class RegisterPage implements ActionListener {
 
         registerWindow.add(registerPanel);
         registerWindow.setVisible(true);
-
-        GeneralUtils.addListenerForEnter(registerButton);
     }
 
     @Override
@@ -120,6 +121,7 @@ public class RegisterPage implements ActionListener {
                         state.setUserName(userName);
                         state.setRole("agent");
 
+                        KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(enterDispatcher);
                         registerWindow.dispose();
                         new UserView();
                     }
@@ -129,6 +131,7 @@ public class RegisterPage implements ActionListener {
                 }
             }
         } else if (e.getSource() == toLoginButton) {
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(enterDispatcher);
             registerWindow.dispose();
             new LoginPage();
         }
