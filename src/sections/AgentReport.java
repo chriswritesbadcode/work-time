@@ -42,12 +42,19 @@ public class AgentReport implements ActionListener {
         JFormattedTextField rangeTextField = new JFormattedTextField(GeneralUtils.getNumberFormatter());
         JComboBox<String> dropDownBox = new JComboBox<String>(Constants.orderResultsByChoices);
         WTButton submitSearchBtn = new WTButton("Search");
+        WTLabel totalDurationLabel = new WTLabel("", false, "sm", "b", 'c');
 
         WTLabel errorLabel = new WTLabel("", false, "md", "b", 'c');
 
         public AgentReport(String userData, String reportType) {
                 // userdata = id:fullName:reportTypeChar
                 // reportType = breaks or work times
+                String[] parts = userData.split(":");
+                this.userData = userData;
+                this.reportType = reportType;
+                this.userId = Integer.parseInt(parts[0]);
+                this.fullName = parts[1];
+
                 reportWindow.setTitle("Agent " + reportType + " report - " + fullName);
                 reportHeading.setText(fullName + "'s " + reportType);
 
@@ -55,12 +62,6 @@ public class AgentReport implements ActionListener {
 
                 reportPanel.add(rangeLabel);
                 reportPanel.add(rangeTextField);
-
-                String[] parts = userData.split(":");
-                this.userData = userData;
-                this.reportType = reportType;
-                this.userId = Integer.parseInt(parts[0]);
-                this.fullName = parts[1];
 
                 rangeTextField.setValue(12);
                 rangeTextField.setMaximumSize(new Dimension(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT));
@@ -70,6 +71,7 @@ public class AgentReport implements ActionListener {
                 dropDownBox.setMaximumSize(new Dimension(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT));
                 reportPanel.add(dropDownBox);
                 reportPanel.add(submitSearchBtn);
+                reportPanel.add(totalDurationLabel);
 
                 showData();
 
@@ -125,7 +127,7 @@ public class AgentReport implements ActionListener {
                                 errorLabel.setText("No records!");
                         } else {
                                 DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern(Constants.HM_PATTERN);
-
+                                long totalDuration = 0;
                                 while (reportRS.next()) {
 
                                         String startTime = GeneralUtils.formatDate(Constants.HM_PATTERN,
@@ -143,6 +145,7 @@ public class AgentReport implements ActionListener {
                                         long days = duration.toDays();
                                         long hours = duration.toHours() % 24;
                                         long minutes = duration.toMinutes() % 60;
+                                        totalDuration += duration.toMillis();
 
                                         String durationStr = (days != 0 ? days + "d, " : "") + hours + "h, "
                                                         + minutes + "m";
@@ -163,10 +166,14 @@ public class AgentReport implements ActionListener {
                                                         "md", "b",
                                                         'c'));
 
-                                        reportChunkPanel.add(
+                                        reportChunkPanel.add(`
                                                         new WTLabel(durationStr, false, "sm", "b", 'c'));
                                         contentPanel.add(reportChunkPanel);
                                 }
+
+                                long hourDur = totalDuration / 1000 / 3600;
+                                long minDur = (totalDuration / 1000 % 3600) / 60;
+                                totalDurationLabel.setText("Total: " + hourDur + "h, " + minDur + "m");
 
                         }
                         con.close();
