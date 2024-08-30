@@ -42,7 +42,7 @@ public class AgentReport implements ActionListener {
 
         WTLabel reportHeading = new WTLabel("", true, "lg", "b", 'c');
 
-        WTLabel rangeLabel = new WTLabel("Show last: ", false, "sm", "b", 'c');
+        WTLabel rangeLabel = new WTLabel("Amount of items to display: ", false, "sm", "b", 'c');
         JFormattedTextField rangeTextField = new JFormattedTextField(GeneralUtils.getNumberFormatter());
         JComboBox<String> dropDownBox = new JComboBox<String>(Constants.orderResultsByChoices);
         WTButton submitSearchBtn = new WTButton("Search");
@@ -87,9 +87,9 @@ public class AgentReport implements ActionListener {
                 dropDownBox.setMaximumSize(new Dimension(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT));
                 reportPanel.add(dropDownBox);
                 reportPanel.add(submitSearchBtn);
-                reportPanel.add(totalDurationLabel);
                 reportPanel.add(startDateChooser);
                 reportPanel.add(endDateChooser);
+                reportPanel.add(totalDurationLabel);
 
                 showData();
 
@@ -155,6 +155,7 @@ public class AgentReport implements ActionListener {
                         } else {
                                 DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern(Constants.HM_PATTERN);
                                 long totalDuration = 0;
+                                int nItems = 0;
                                 while (reportRS.next()) {
 
                                         String startTime = GeneralUtils.formatDate(Constants.HM_PATTERN,
@@ -196,11 +197,13 @@ public class AgentReport implements ActionListener {
                                         reportChunkPanel.add(
                                                         new WTLabel(durationStr, false, "sm", "b", 'c'));
                                         contentPanel.add(reportChunkPanel);
+                                        nItems++;
                                 }
 
                                 long hourDur = totalDuration / 1000 / 3600;
                                 long minDur = (totalDuration / 1000 % 3600) / 60;
-                                totalDurationLabel.setText("Total: " + hourDur + "h, " + minDur + "m");
+                                totalDurationLabel.setText("Total: " + hourDur + "h, " + minDur + "m" + " (from "
+                                                + nItems + " items)");
 
                         }
                         con.close();
