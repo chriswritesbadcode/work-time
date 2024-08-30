@@ -15,11 +15,13 @@ import components.WTOptionPane;
 import components.WTPanel;
 import components.WTScrollPane;
 import components.WTSpacer;
+import components.WTTextField;
 import components.WTWindow;
 import consts.Constants;
 import sections.AgentReport;
 import state.AppState;
 import utils.DatabaseUtils;
+import utils.GeneralUtils;
 
 public class AdminView implements ActionListener {
     AppState state = AppState.getInstance();
@@ -31,60 +33,36 @@ public class AdminView implements ActionListener {
     WTPanel contentPanel = new WTPanel("");
 
     WTLabel adminHeading = new WTLabel("Admin Dashboard", true, "lg", "b", 'c');
+    WTTextField userSearchField = new WTTextField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
+    WTButton submitSearchBtn = new WTButton("Search");
+
     WTLabel errorLabel = new WTLabel("", false, "md", "b", 'c');
 
     WTButton logoutButton = new WTButton("Logout");
 
     public AdminView() {
         adminPanel.add(adminHeading);
+        adminPanel.add(userSearchField);
+        adminPanel.add(submitSearchBtn);
+        submitSearchBtn.addActionListener(this);
 
         try {
-
-            Connection con = DatabaseUtils.getConnection();
-
-            Statement getUserSTMT = con.createStatement();
-            ResultSet usersRS = getUserSTMT.executeQuery("SELECT * FROM users WHERE role = 'agent'");
-            if (!usersRS.isBeforeFirst()) {
-                errorLabel.setText("No users");
-            } else {
-                while (usersRS.next()) {
-                    WTPanel singleUserContainer = new WTPanel("box");
-
-                    singleUserContainer.add(new WTLabel(usersRS.getString(4), false, "sm", "b", 'c'));
-                    WTButton workTimesButton = new WTButton("Work Times");
-                    WTButton breaksButton = new WTButton("Breaks");
-
-                    // get id as string cos fn expects string
-                    workTimesButton.setActionCommand(usersRS.getString(1) + ":" + usersRS.getString(4) + ":w");
-                    breaksButton.setActionCommand(usersRS.getString(1) + ":" + usersRS.getString(4) + ":b");
-
-                    workTimesButton.addActionListener(this);
-                    breaksButton.addActionListener(this);
-
-                    singleUserContainer.add(workTimesButton);
-                    singleUserContainer.add(breaksButton);
-
-                    contentPanel.add(singleUserContainer);
-
-                }
-            }
-            con.close();
+            getUsers();
         } catch (SQLException err) {
             WTOptionPane.showMessageBox("ERROR IN ADMINVIEW GET USERS: " + err);
         }
 
         adminPanel.add(contentPanel);
         adminPanel.add(errorLabel);
-        // SPACERS
-        for (int i = 0; i < 2; i++) {
-            adminPanel
-                    .add(new WTSpacer(new Dimension(Constants.LARGE_Y_SPACER_WIDTH, Constants.LARGE_Y_SPACER_HEIGHT)));
-        }
+
+        adminPanel.add(new WTSpacer(new Dimension(Constants.LARGE_Y_SPACER_WIDTH, Constants.LARGE_Y_SPACER_HEIGHT)));
         adminPanel.add(logoutButton);
         logoutButton.addActionListener(this);
+
         adminWindow.add(adminScrollPane);
         adminWindow.setVisible(true);
 
+        GeneralUtils.addListenerForEnter(submitSearchBtn);
     }
 
     @Override
@@ -103,6 +81,8 @@ public class AdminView implements ActionListener {
                 AppState.resetInstance();
                 adminWindow.dispose();
                 new LoginPage();
+            } else if (e.getSource() == submitSearchBtn) {
+                getUsers();
             } else {
                 if (!userData.isEmpty()) {
                     String[] parts = userData.split(":");
@@ -118,5 +98,43 @@ public class AdminView implements ActionListener {
             WTOptionPane.showMessageBox("ERROR IN ADMIN VIEW - ACTION PERFORMED OVERRIDE: " + err);
         }
 
+    }
+
+    private void getUsers() throws SQLException {
+        contentPanel.removeAll();
+        Connection con = DatabaseUtils.getConnection();
+
+        Statement getUserSTMT = con.createStatement();
+        ResultSet usersRS = getUserSTMT.executeQuery(
+                "SELECT * FROM users WHERE role = 'agent' AND full_name LIKE '%" + userSearchField.getText()
+                        + "%' ORDER BY full_name");
+        if (!usersRS.isBeforeFirst()) {
+            errorLabel.setText("No users");
+        } else {
+            while (usersRS.next()) {
+                WTPanel singleUserContainer = new WTPanel("box");
+
+                singleUserContainer.add(new WTLabel(usersRS.getString(4), false, "sm", "b", 'c'));
+                WTButton workTimesButton = new WTButton("Work Times");
+                WTButton breaksButton = new WTButton("Breaks");
+
+                // get id as string cos fn expects string
+                workTimesButton.setActionCommand(usersRS.getString(1) + ":" + usersRS.getString(4) + ":w");
+                breaksButton.setActionCommand(usersRS.getString(1) + ":" + usersRS.getString(4) + ":b");
+
+                workTimesButton.addActionListener(this);
+                breaksButton.addActionListener(this);
+
+                singleUserContainer.add(workTimesButton);
+                singleUserContainer.add(breaksButton);
+
+                contentPanel.add(singleUserContainer);
+
+            }
+
+            contentPanel.revalidate();
+            contentPanel.repaint();
+        }
+        con.close();
     }
 }
