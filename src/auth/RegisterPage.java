@@ -9,6 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import components.WTButton;
 import components.WTLabel;
 import components.WTOptionPane;
@@ -33,7 +37,7 @@ public class RegisterPage implements ActionListener {
 
     WTLabel registerHeading = new WTLabel("Register a new account", true, "lg", "b", 'c');
 
-    WTLabel fullNameLabel = new WTLabel("Name:", false, "sm", "b", 'c');
+    WTLabel fullNameLabel = new WTLabel("Full Name:", false, "sm", "b", 'c');
     WTTextField fullNameField = new WTTextField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
     WTLabel userNameLabel = new WTLabel("Username:", false, "sm", "b", 'c');
     WTTextField userNameField = new WTTextField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
@@ -56,6 +60,24 @@ public class RegisterPage implements ActionListener {
         registerPanel.add(fullNameField);
         registerPanel.add(userNameLabel);
         registerPanel.add(userNameField);
+        userNameField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                SwingUtilities.invokeLater(() -> {
+                    userNameField.setText(userNameField.getText().toLowerCase());
+                });
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+
+            }
+
+        });
         registerPanel.add(passwordLabel);
         registerPanel.add(passwordField);
 
@@ -87,7 +109,7 @@ public class RegisterPage implements ActionListener {
             } else if (!InputValidator.validateUserName(userName)) {
                 errorLabel.setText(invalidMsg + "Username, 4 to 20 characters, lowercase!");
             } else if (!InputValidator.validatePasword(password)) {
-                errorLabel.setText(invalidMsg + "Password, 4 digits only!");
+                errorLabel.setText(invalidMsg + "Password, 8 to 16 digits!");
             } else {
                 try {
                     Connection con = DriverManager.getConnection(Constants.DB_HOST,
@@ -123,6 +145,19 @@ public class RegisterPage implements ActionListener {
 
                         KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(enterDispatcher);
                         registerWindow.dispose();
+
+                        String[] session = SessionManager.createSession(state.getUserId());
+                        String token = session[0];
+                        long expirationDate = Long.parseLong(session[1]);
+
+                        PreparedStatement sessionPSTMT = con.prepareStatement(
+                                "INSERT INTO sessions(user_id, token, expiration_date) VALUES(?, ?, ?)");
+
+                        sessionPSTMT.setInt(1, state.getUserId());
+                        sessionPSTMT.setString(2, token);
+                        sessionPSTMT.setLong(3, expirationDate);
+                        sessionPSTMT.executeUpdate();
+
                         new UserView();
                     }
                     con.close();

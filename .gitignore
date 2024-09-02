@@ -30,3 +30,7 @@ bin/
 
 .env
 session.dat
+jre
+.log
+.jar
+.xml

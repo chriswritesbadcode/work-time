@@ -38,7 +38,7 @@ public final class Constants {
     // REGEX -----------------------
     public static final String FNAME_REGEX = "^[a-zA-Z ]{2,50}$";
     public static final String UNAME_REGEX = "^[a-z]{4,20}$";
-    public static final String PW_REGEX = "^[0-9]{4}$";
+    public static final String PW_REGEX = "^[0-9]{8,16}$";
 
     public static final Pattern PW_PATTERN = Pattern.compile(Constants.PW_REGEX);
     public static final Pattern FN_PATTERN = Pattern.compile(Constants.FNAME_REGEX);
