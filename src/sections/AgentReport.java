@@ -45,7 +45,7 @@ public class AgentReport implements ActionListener {
         WTLabel rangeLabel = new WTLabel("(amount of items to display)", false, "sm", "b", 'c');
         JFormattedTextField rangeTextField = new JFormattedTextField(GeneralUtils.getNumberFormatter());
         JComboBox<String> dropDownBox = new JComboBox<String>(Constants.orderResultsByChoices);
-        WTButton submitSearchBtn = new WTButton("Search");
+        WTButton submitSearchBtn = new WTButton("Search", Constants.actionBtnBgColor);
         WTLabel totalDurationLabel = new WTLabel("", false, "sm", "b", 'c');
 
         WTSpinner startDateChooser = new WTSpinner();
@@ -74,7 +74,7 @@ public class AgentReport implements ActionListener {
                 endDateChooser.setValue(new Date());
 
                 reportWindow.setTitle("Agent " + reportType + " report - " + fullName);
-                reportHeading.setText(fullName + "'s " + reportType);
+                reportHeading.setText(fullName + "'s " + (reportType.equals("work times") ? "work hours" : reportType));
 
                 reportPanel.add(reportHeading);
 

@@ -42,7 +42,7 @@ public class RegisterPage implements ActionListener {
 
     WTSpacer spacer = new WTSpacer(new Dimension(Constants.SMALL_Y_SPACER_WIDTH, Constants.SMALL_Y_SPACER_HEIGHT));
 
-    WTButton registerButton = new WTButton("Register");
+    WTButton registerButton = new WTButton("Register", Constants.actionBtnBgColor);
     WTButton toLoginButton = new WTButton("Login to an existing account");
 
     WTLabel errorLabel = new WTLabel("", false, "sm", "r", 'c');

@@ -40,8 +40,8 @@ public class UserView implements ActionListener {
     WTLabel userViewHeading = new WTLabel("Work Time", true, "lg", "b", 'c');
     WTLabel fullNameLabel = new WTLabel(state.getFullName(), false, "sm", "b", 'c');
 
-    WTButton endWorkBtn = new WTButton("End Work");
-    WTButton startWorkBtn = new WTButton("Start Work");
+    WTButton endWorkBtn = new WTButton("End Work", Constants.actionBtnBgColor);
+    WTButton startWorkBtn = new WTButton("Start Work", Constants.actionBtnBgColor);
     WTButton endLunchBtn = new WTButton("End Lunch");
     WTButton startLunchBtn = new WTButton("Start Lunch");
     WTButton endToiletBtn = new WTButton("End Toilet Break");
@@ -54,7 +54,7 @@ public class UserView implements ActionListener {
     WTLabel todaysBreaksLabel = new WTLabel("", false, "sm", "b", 'c');
     WTLabel errorLabel = new WTLabel("", false, "sm", "b", 'c');
 
-    WTButton logoutBtn = new WTButton("Logout");
+    WTButton logoutBtn = new WTButton("Logout", Constants.actionBtnBgColor);
 
     public UserView() {
         userWindow.setTitle("Work Time - " + state.getFullName());

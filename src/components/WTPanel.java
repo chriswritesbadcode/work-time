@@ -1,10 +1,9 @@
 package components;
 
-import java.awt.Color;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import consts.Constants;
 import utils.WrapLayout;
 
 public class WTPanel extends JPanel {
@@ -18,6 +17,6 @@ public class WTPanel extends JPanel {
             this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
         }
-        this.setBackground(new Color(133, 173, 173));
+        this.setBackground(Constants.panelBgColor);
     }
 }

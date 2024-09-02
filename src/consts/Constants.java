@@ -1,5 +1,6 @@
 package consts;
 
+import java.awt.Color;
 import java.util.regex.Pattern;
 
 public final class Constants {
@@ -50,10 +51,17 @@ public final class Constants {
     // -----------------------------
 
     // ASC/DESC DROPDOWN -----------
-
     public static final String[] orderResultsByChoices = { "Newest first", "Oldest First" };
     // -----------------------------
 
+    // STYLES ----------------------
+    public static final Color panelBgColor = new Color(184, 176, 141);
+    public static final Color btnBgColor = new Color(242, 212, 146);
+    public static final Color actionBtnBgColor = new Color(250, 198, 85);
+    // -----------------------------
+
+    // MISC ------------------------
     public static final long WARN_IF_WORKING_LESS_THAN = 25200000; // 7H in MS
+    // -----------------------------
 
 }

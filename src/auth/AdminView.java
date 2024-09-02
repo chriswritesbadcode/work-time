@@ -34,11 +34,11 @@ public class AdminView implements ActionListener {
 
     WTLabel adminHeading = new WTLabel("Admin Dashboard", true, "lg", "b", 'c');
     WTTextField userSearchField = new WTTextField(Constants.DEF_INPUT_WIDTH, Constants.DEF_INPUT_HEIGHT);
-    WTButton submitSearchBtn = new WTButton("Search");
+    WTButton submitSearchBtn = new WTButton("Search", Constants.actionBtnBgColor);
 
     WTLabel errorLabel = new WTLabel("", false, "md", "b", 'c');
 
-    WTButton logoutButton = new WTButton("Logout");
+    WTButton logoutButton = new WTButton("Logout", Constants.actionBtnBgColor);
 
     public AdminView() {
         adminPanel.add(adminHeading);
@@ -102,6 +102,7 @@ public class AdminView implements ActionListener {
 
     private void getUsers() throws SQLException {
         contentPanel.removeAll();
+        errorLabel.setText("");
         Connection con = DatabaseUtils.getConnection();
 
         Statement getUserSTMT = con.createStatement();
@@ -115,7 +116,7 @@ public class AdminView implements ActionListener {
                 WTPanel singleUserContainer = new WTPanel("box");
 
                 singleUserContainer.add(new WTLabel(usersRS.getString(4), false, "sm", "b", 'c'));
-                WTButton workTimesButton = new WTButton("Work Times");
+                WTButton workTimesButton = new WTButton("Work Hours");
                 WTButton breaksButton = new WTButton("Breaks");
 
                 // get id as string cos fn expects string

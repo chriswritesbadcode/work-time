@@ -39,7 +39,7 @@ public class LoginPage implements ActionListener {
 
     WTSpacer spacer = new WTSpacer(new Dimension(Constants.SMALL_Y_SPACER_WIDTH, Constants.SMALL_Y_SPACER_HEIGHT));
 
-    WTButton loginBtn = new WTButton("Login");
+    WTButton loginBtn = new WTButton("Login", Constants.actionBtnBgColor);
     WTButton toRegisterButton = new WTButton("Register a new account");
 
     WTLabel errorLabel = new WTLabel("", false, "md", "r", 'c');
