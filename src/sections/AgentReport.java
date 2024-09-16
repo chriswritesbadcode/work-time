@@ -154,6 +154,8 @@ public class AgentReport implements ActionListener {
 
         private void getData() {
                 contentPanel.removeAll();
+                errorLabel.setText("");
+                totalDurationLabel.setText("");
                 try {
                         Connection con = DatabaseUtils.getConnection();
 
